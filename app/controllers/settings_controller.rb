@@ -3,6 +3,7 @@ class SettingsController < ApplicationController
   # GET /settings.xml
   def index
     @settings = Setting.all
+    @token = form_authenticity_token
 
     respond_to do |format|
       format.html # index.html.erb
@@ -61,7 +62,9 @@ class SettingsController < ApplicationController
 
     respond_to do |format|
       if @setting.update_attributes(params[:setting])
-        flash[:notice] = 'Setting was successfully updated.'
+        unless request.xhr?
+          flash[:notice] = 'Setting was successfully updated.'
+        end
         format.html { redirect_to(@setting) }
         format.xml  { head :ok }
       else

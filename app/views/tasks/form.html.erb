@@ -1,4 +1,4 @@
-<h1>Editing task</h1>
+<h1><%= @task.new_record? ? "New" : "Edit" %> task</h1>
 
 <% form_for(@task) do |f| %>
   <%= f.error_messages %>
@@ -9,16 +9,15 @@
   </p>
   <p>
     <%= f.label :priority %><br />
-    <%= f.text_field :priority %>
+    <%= f.select :priority, Task::PRIORITIES %>
   </p>
   <p>
     <%= f.label :status %><br />
-    <%= f.text_field :status %>
+    <%= f.select :status, Task::STATUSES %>
   </p>
   <p>
-    <%= f.submit 'Update' %>
+    <%= f.submit %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @task %> |
 <%= link_to 'Back', tasks_path %>

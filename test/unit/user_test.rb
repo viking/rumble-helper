@@ -1,8 +1,9 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  test "belongs_to task" do
+    task = Factory(:task)
+    user = Factory(:user, :task => task)
+    assert_equal task, user.task
   end
 end

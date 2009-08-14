@@ -27,7 +27,7 @@ class TasksController < ApplicationController
     @task = Task.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :template => 'tasks/form' }
       format.xml  { render :xml => @task }
     end
   end
@@ -35,6 +35,7 @@ class TasksController < ApplicationController
   # GET /tasks/1/edit
   def edit
     @task = Task.find(params[:id])
+    render :template => 'tasks/form'
   end
 
   # POST /tasks
@@ -81,10 +82,5 @@ class TasksController < ApplicationController
       format.html { redirect_to(tasks_url) }
       format.xml  { head :ok }
     end
-  end
-
-  def people
-    people = Task.all(:conditions => "person IS NOT NULL").collect(&:person)
-    render :text => people.join("\n")
   end
 end

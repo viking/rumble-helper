@@ -10,7 +10,12 @@
 </head>
 <body>
   <div id="header">
-    <div class="text"><%= Setting['team_name'] %></div>
+    <div class="text">
+      <%= Setting['team_name'] %>
+      <%- if controller.controller_name != 'tasks' -%>
+      : <%= controller.controller_name.titleize %>
+      <%- end %>
+    </div>
   </div>
   <div id="nav">
     <ul>
@@ -19,14 +24,19 @@
     </ul>
     <div class="clear"></div>
   </div>
-  <%- if flash[:notice] -%>
-  <div id="flash"><%= flash[:notice] %></div>
-  <%- end -%>
-
   <div id="wrapper">
     <div id="content">
       <%= yield %>
     </div>
   </div>
+
+  <%- if flash[:notice] -%>
+  <div id="flash">
+    <%= flash[:notice] %>
+  </div>
+  <% javascript_tag do %>
+    $('#flash').fadeOut(2000);
+  <% end %>
+  <%- end -%>
 </body>
 </html>

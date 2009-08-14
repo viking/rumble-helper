@@ -22,7 +22,6 @@ ActiveRecord::Schema.define(:version => 20090813191422) do
     t.string   "name"
     t.string   "priority"
     t.string   "status"
-    t.string   "person"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -40,6 +39,7 @@ ActiveRecord::Schema.define(:version => 20090813191422) do
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
+    t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

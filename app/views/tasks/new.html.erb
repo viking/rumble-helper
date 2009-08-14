@@ -1,7 +1,6 @@
-<%= javascript_include_tag 'jquery.autocomplete.min.js' %>
-<%= stylesheet_link_tag 'jquery.autocomplete.css' %>
+<%= javascript_include_tag 'jquery.multiselect.min.js' %>
 
-<h1>New task</h1>
+<h1><%= @task.new_record? ? "New" : "Edit" %> task</h1>
 
 <% form_for(@task) do |f| %>
   <%= f.error_messages %>
@@ -19,15 +18,34 @@
     <%= f.select :status, Task::STATUSES %>
   </p>
   <p>
-    <%= f.label :person %><br />
-    <%= f.text_field :person %>
+    People:<br/>
+    <table class="multiselect">
+      <tr>
+        <td>
+          <select multiple="multiple">
+            <%= options_from_collection_for_select(@undelegated_people, :id, :name) %>
+          </select>
+        </td>
+        <td>
+          <select name="task[task_delegations_attributes][][person_id]" multiple="multiple">
+          <%- @task.task_delegations.each do |delegation| -%>
+            <option value="<%= delegation.person.id %>"><%= delegation.person.name %></option>
+          <%- end -%>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><input type="button" value="Add &raquo;"/></td>
+        <td><input type="button" value="&laquo; Remove"/></td>
+      </tr>
+    </table>
   </p>
   <p>
-    <%= f.submit 'Create' %>
+    <%= f.submit %>
   </p>
 <% end %>
 
 <%= link_to 'Back', tasks_path %>
 <% javascript_tag do %>
-  $('#task_person').autocomplete('<%= tasks_url %>/people');
+  $('.multiselect').multiselect();
 <% end %>

@@ -101,11 +101,82 @@ a:hover { color: #fff; background-color:#000; }
   text-decoration: none;
 }
 
+#flash {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  background-color: green;
+  color: white;
+  border: 2px solid #222;
+  width: 20em;
+  height: 1.5em;
+  padding: 0.5em;
+  text-align: center;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
 #wrapper {
   width: 960px;
   margin: 0 auto;
 }
 
+#people {
+  float: left;
+  width: 198px;
+  background-color: #9fa66f;
+  border-right: 2px solid #6f763f
+}
+
 #content {
-  padding: 0.3em;
+  float: left;
+  width: 760px;
+  background-color: white;
+}
+
+ul.tasks {
+  margin: 1em;
+  padding: 0;
+  list-style-type: none;
+}
+
+ul.tasks li {
+  float: left;
+  padding: 1em;
+  margin: 0.3em;
+  border: 2px solid #222;
+  width: 8em;
+  height: 3em;
+  text-align: center;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+li.critical { background-color: red; color: white; }
+li.high { background-color: orange; color: white; }
+li.medium { background-color: blue; color: white; }
+li.low { background-color: green; color: white; }
+
+table.settings {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 1em 0;
+  border-bottom: 1px solid #222
+}
+
+table.settings th {
+  background-color: #222;
+  color: white;
+}
+
+table.settings td {
+  padding: 1em;
+}
+
+table.settings td.name {
+  font-weight: bold;
+}
+
+table.settings tr.alt td {
+  background-color: #ddd;
 }

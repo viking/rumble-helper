@@ -1,22 +1,59 @@
-<h1>Listing settings</h1>
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Value</th>
-  </tr>
-
-<% @settings.each do |setting| %>
-  <tr>
-    <td><%=h setting.name %></td>
-    <td><%=h setting.value %></td>
-    <td><%= link_to 'Show', setting %></td>
-    <td><%= link_to 'Edit', edit_setting_path(setting) %></td>
-    <td><%= link_to 'Destroy', setting, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+<table class="settings">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @settings.each do |setting| %>
+    <tr<%= cycle("", " class='alt'") %>>
+      <td class="name"><%= setting.name.titleize %></td>
+      <td id="setting_<%= setting.id %>" class="value"><%= setting.value %></td>
+    </tr>
+    <% end %>
+  </tbody>
 </table>
+<div style="font-size: smaller">
+  (Hint: try clicking the values to change them!)
+</div>
+<% javascript_tag do %>
+  $('.value').click(function() {
+    obj = $(this);
+    if (obj.hasClass('editing')) {
+    }
+    else {
+      obj.addClass('editing');
+      current = obj.html();
+      id = this.id.substring(8);
 
-<br />
+      input = $("<input type='text' />");
+      input.val(current);
+      input.keydown(function(e) {
+        if (e.keyCode == 27) {
+          obj.html($(this).val());
+          obj.removeClass('editing');
+        }
+        else if (e.keyCode == 13) {
+          value = $(this).val();
+          data = {
+            _method: 'put', 'setting[value]': value,
+            authenticity_token: '<%= @token %>'
+          };
+          $.ajax({
+            url: '<%= settings_url %>/'+id+'.xml',
+            data: data,
+            type: 'POST',
+            complete: function() {
+              obj.html(value);
+              obj.removeClass('editing');
+            }
+          });
+        }
+      });
 
-<%= link_to 'New setting', new_setting_path %>
+      obj.html(input);
+      input.select();
+    }
+  });
+<% end %>

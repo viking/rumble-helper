@@ -35,6 +35,11 @@ class SettingsControllerTest < ActionController::TestCase
     assert_redirected_to setting_path(assigns(:setting))
   end
 
+  test "should not set flash when updating via ajax" do
+    xhr :put, :update, :id => settings(:team_name).to_param, :setting => { }
+    assert_nil flash[:notice]
+  end
+
   test "should destroy setting" do
     assert_difference('Setting.count', -1) do
       delete :destroy, :id => settings(:team_name).to_param

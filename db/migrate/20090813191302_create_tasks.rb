@@ -4,7 +4,6 @@ class CreateTasks < ActiveRecord::Migration
       t.string :name
       t.string :priority
       t.string :status
-      t.string :person
 
       t.timestamps
     end

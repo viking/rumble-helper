@@ -46,12 +46,4 @@ class TasksControllerTest < ActionController::TestCase
 
     assert_redirected_to tasks_path
   end
-
-  test "should get list of people for autocompletion" do
-    Factory.create(:task, :person => "James")
-    Factory.create(:task, :person => "Thomas")
-    xhr :get, :people
-
-    assert_equal "James\nThomas", @response.body
-  end
 end

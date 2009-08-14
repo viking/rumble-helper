@@ -20,4 +20,10 @@ class TaskTest < ActiveSupport::TestCase
     task.status = 'Crap'
     assert !task.valid?
   end
+
+  test "has_many users" do
+    task = Factory(:task)
+    user = Factory(:user, :task => task)
+    assert_equal [user], task.users
+  end
 end
