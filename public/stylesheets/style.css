@@ -1,5 +1,5 @@
 body {
-  background-color: #fff;
+  background-color: #ddd;
   color: #333;
   margin: 0;
   padding: 0;
@@ -57,44 +57,33 @@ a:hover { color: #fff; background-color:#000; }
   list-style: square;
 }
 
-.clear {
-  display: block;
-  clear: both;
-  width: 0;
-  height: 0;
-}
-
 #header {
   color: white;
   font-size: x-large;
   font-weight: bold;
   background-color: #333;
-  padding: 1em;
   border-bottom: 2px solid #222;
 }
-#header .text {
-  width: 960px;
-  margin: 0 auto;
+#header .grid_12 {
+  padding: 1em 0;
 }
 
 #nav {
   color: white;
   background-color: navy;
-  padding: 0.3em;
+  height: 1.5em;
+  padding: 0.5em 0;
 }
-
 #nav ul {
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
   list-style-type: none;
-  width: 960px;
 }
-
 #nav li {
   float: left;
-  padding: 0.3em 0.5em;
+  padding: 0 0.5em;
+  margin: 0 -0.3em 0 0.3em;
 }
-
 #nav a, #nav a:visited, #nav a:hover {
   color: white;
   background-color: transparent;
@@ -108,7 +97,7 @@ a:hover { color: #fff; background-color:#000; }
   background-color: green;
   color: white;
   border: 2px solid #222;
-  width: 20em;
+  width: 25em;
   height: 1.5em;
   padding: 0.5em;
   text-align: center;
@@ -116,31 +105,18 @@ a:hover { color: #fff; background-color:#000; }
   -webkit-border-radius: 5px;
 }
 
-#wrapper {
-  width: 960px;
-  margin: 0 auto;
-}
-
-#people {
-  float: left;
-  width: 198px;
-  background-color: #9fa66f;
-  border-right: 2px solid #6f763f
-}
-
-#content {
-  float: left;
-  width: 760px;
-  background-color: white;
+#main {
+  margin-top: 2em;
 }
 
 ul.tasks {
-  margin: 1em;
+  margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-ul.tasks li {
+ul.tasks li,
+.task {
   float: left;
   padding: 1em;
   margin: 0.3em;
@@ -152,10 +128,10 @@ ul.tasks li {
   -webkit-border-radius: 15px;
 }
 
-li.critical { background-color: red; color: white; }
-li.high { background-color: orange; color: white; }
-li.medium { background-color: blue; color: white; }
-li.low { background-color: green; color: white; }
+.critical { background-color: red; color: white; }
+.high { background-color: orange; color: white; }
+.medium { background-color: blue; color: white; }
+.low { background-color: green; color: white; }
 
 table.settings {
   border-spacing: 0;
@@ -179,4 +155,15 @@ table.settings td.name {
 
 table.settings tr.alt td {
   background-color: #ddd;
+}
+
+.bubble {
+  background-color: white;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  padding: 1em;
+}
+
+.ralign {
+  text-align: right;
 }

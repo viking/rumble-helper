@@ -1,14 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
   map.resources :people
-
   map.resources :settings
-
-  map.resources :tasks, :collection => { :people => :get }
-
+  map.resources :tasks
   map.resource :account, :controller => 'users'
-
   map.resources :users
-
   map.resource :user_session
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -43,7 +38,7 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  map.root :controller => "tasks"
+  map.root :controller => "dashboard"
 
   # See how all your routes lay out with "rake routes"
 

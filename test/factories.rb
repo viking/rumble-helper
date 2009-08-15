@@ -7,5 +7,4 @@ end
 
 Factory.define :task do |t|
   t.priority { %w{Critical High Medium Low}.random }
-  t.status { %w{To-do Started Stalled Done}.random }
 end

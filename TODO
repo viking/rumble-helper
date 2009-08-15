@@ -1,2 +1,5 @@
 - make tasks/settings writable by logged in users only
-- use aasm for tasks
+- spruce up the tasks and settings views
+- add drag/drop for switching/activating/finishing tasks
+- need trash and finish icons in task bubbles
+- need a setup phase for specifying team members

@@ -1,0 +1,59 @@
+<div class="grid_12">
+  <h2>Who's working on what?</h2>
+</div>
+<div class="clear"></div>
+
+<% @users.each_with_index do |user, i| %>
+  <div class="grid_<%= 12 / @num_users %>">
+    <div class="bubble">
+      <h3><%= user.login %></h3>
+      <% if user.task %>
+      <div class="task <%= user.task.priority.downcase %>">
+      </div>
+      <% else %>
+        Ain't doin' nothin'!
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<div class="clear"></div>
+<br/>
+
+<div class="grid_12">
+  <h2>What's left to do?</h2>
+  <div class="bubble">
+    <% if @pending_tasks.empty? %>
+      You did everything?  Yeah right.
+      Better <%= link_to 'add another task', new_task_url %>.
+    <% else %>
+    <ul class="tasks">
+    <% @pending_tasks.each do |task| %>
+      <li class="<%= task.priority.downcase %>">
+        <div><%=h task.name %></div>
+      </li>
+    <% end %>
+    </ul>
+    <div class="clear"></div>
+    <% end %>
+  </div>
+</div>
+<div class="clear"></div>
+<br/>
+
+<div class="grid_12">
+  <h2>What's finished?</h2>
+  <div class="bubble">
+    <% if @finished_tasks.empty? %>
+      You haven't finished squat!  Better get to it!
+    <% else %>
+    <ul class="tasks">
+    <% @finished_tasks.each do |task| %>
+      <li class="<%= task.priority.downcase %>">
+        <div><%=h task.name %></div>
+      </li>
+    <% end %>
+    </ul>
+    <div class="clear"></div>
+    <% end %>
+  </div>
+</div>
