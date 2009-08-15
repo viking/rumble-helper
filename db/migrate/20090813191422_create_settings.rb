@@ -6,7 +6,7 @@ class CreateSettings < ActiveRecord::Migration
 
       t.timestamps
     end
-    Setting.create(:name => 'team_name', :value => 'Our Rumble Team')
+    Setting.create(:name => 'team_slug', :value => nil)
   end
 
   def self.down

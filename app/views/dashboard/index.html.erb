@@ -6,7 +6,7 @@
 <% @users.each_with_index do |user, i| %>
   <div class="grid_<%= 12 / @num_users %>">
     <div class="bubble">
-      <h3><%= user.login %></h3>
+      <h3><%= user.nickname %></h3>
       <% if user.task %>
       <div class="task <%= user.task.priority.downcase %>">
       </div>

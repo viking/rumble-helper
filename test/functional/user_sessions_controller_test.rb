@@ -8,10 +8,8 @@ class UserSessionsControllerTest < ActionController::TestCase
 
   test "should create user session" do
     user = Factory.create(:user)
-    post :create, :user_session => { :login => user.login, :password => "secret" }
-    assert user_session = UserSession.find
-    assert_equal user, user_session.user
-    assert_redirected_to root_path
+    post :create, :user_session => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
+    assert @response.redirected_to =~ /^https:\/\/open.login.yahooapis.com\/openid\/op\/auth/
   end
 
   test "should destroy user session" do

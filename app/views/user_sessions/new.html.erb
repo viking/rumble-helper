@@ -1,14 +1,29 @@
+<div class="prefix_3 grid_6 suffix_3">
 <h1>Login</h1>
 
-<% form_for @user_session, :url => user_session_path do |f| %>
+<div class="bubble">
+<%= stylesheet_link_tag 'openid' %>
+<%= javascript_include_tag 'openid-jquery' %>
+
+<% form_for @user_session, :url => user_session_url, :html => {:id => "openid_form"} do |f| %>
   <%= f.error_messages %>
-  <%= f.label :login %><br />
-  <%= f.text_field :login %><br />
-  <br />
-  <%= f.label :password %><br />
-  <%= f.password_field :password %><br />
-  <br />
-  <%= f.check_box :remember_me %><%= f.label :remember_me %><br />
-  <br />
-  <%= f.submit "Login" %>
+  <div id="openid_choice">
+    <p>Please click your account provider:</p>
+    <div id="openid_btns"></div>
+  </div>
+
+  <div id="openid_input_area">
+    <input id="openid_identifier" name="user_session[openid_identifier]" type="text" value="http://" />
+    &nbsp;<input id="openid_submit" type="submit" value="Sign-In"/>
+  </div>
+  <noscript>
+    <p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+    Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
+  </noscript>
+<% end %>
+</div>
+</div>
+
+<% javascript_tag do %>
+  openid.init('openid_identifier');
 <% end %>

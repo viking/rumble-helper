@@ -11,11 +11,8 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should create user" do
-    assert_difference('User.count') do
-      post :create, :user => { :login => "zaphod", :password => "fortytwo", :password_confirmation => "fortytwo", :email => "zaphod@example.com" }
-    end
-
-    assert_redirected_to root_path
+    post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
+    assert @response.redirected_to =~ /^https:\/\/open.login.yahooapis.com\/openid\/op\/auth/
   end
 
   test "should show user" do

@@ -9,7 +9,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090813191422) do
+ActiveRecord::Schema.define(:version => 20090815170505) do
+
+  create_table "open_id_authentication_associations", :force => true do |t|
+    t.integer "issued"
+    t.integer "lifetime"
+    t.string  "handle"
+    t.string  "assoc_type"
+    t.binary  "server_url"
+    t.binary  "secret"
+  end
+
+  create_table "open_id_authentication_nonces", :force => true do |t|
+    t.integer "timestamp",  :null => false
+    t.string  "server_url"
+    t.string  "salt",       :null => false
+  end
 
   create_table "settings", :force => true do |t|
     t.string   "name"
@@ -27,10 +42,8 @@ ActiveRecord::Schema.define(:version => 20090813191422) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "login"
+    t.string   "nickname"
     t.string   "email"
-    t.string   "crypted_password"
-    t.string   "password_salt"
     t.string   "persistence_token"
     t.integer  "login_count"
     t.integer  "failed_login_count"
@@ -39,9 +52,13 @@ ActiveRecord::Schema.define(:version => 20090813191422) do
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
+    t.string   "perishable_token",   :default => "", :null => false
+    t.string   "openid_identifier"
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["openid_identifier"], :name => "index_users_on_openid_identifier"
 
 end
