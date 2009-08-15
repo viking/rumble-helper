@@ -1,45 +1,57 @@
 require 'test_helper'
 
 class TeamsControllerTest < ActionController::TestCase
-  setup do
+  def setup
     @data = fixture_data('team_data')
     Rumble.stubs(:team).with('team-shazbot').returns(@data)
+    @team = Factory(:team)
   end
 
   test "should get new" do
+    Team.delete_all
     get :new
     assert_response :success
   end
 
-  test "should create team" do
+  test "should redirect from new to show if team exists" do
+    get :new
+    assert_redirected_to 'team'
+  end
 
+  test "should create team" do
+    Team.delete_all
     assert_difference('Team.count') do
       post :create, :team => Factory.attributes_for(:team)
     end
+    assert_redirected_to new_account_url
+  end
 
-    assert_redirected_to team_path
+  test "should redirect from create to show if team exists" do
+    assert_no_difference('Team.count') do
+      post :create, :team => Factory.attributes_for(:team)
+    end
+    assert_redirected_to 'team'
   end
 
   test "should show team" do
-    get :show, :id => teams(:one).to_param
+    get :show
     assert_response :success
+    assert_equal @team, assigns(:team)
+  end
+
+  test "should redirect from show to new if no team" do
+    Team.delete_all
+    get :show
+    assert_redirected_to 'team/new'
   end
 
   test "should get edit" do
-    get :edit, :id => teams(:one).to_param
+    get :edit, :id => @team.to_param
     assert_response :success
   end
 
   test "should update team" do
-    put :update, :id => teams(:one).to_param, :team => { }
+    put :update, :team => { }
     assert_redirected_to team_path
-  end
-
-  test "should destroy team" do
-    assert_difference('Team.count', -1) do
-      delete :destroy, :id => teams(:one).to_param
-    end
-
-    assert_redirected_to root_url
   end
 end

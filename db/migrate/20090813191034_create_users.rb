@@ -13,7 +13,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :last_login_ip
       t.string :perishable_token, :default => "", :null => false
       t.string :openid_identifier
-      t.integer :task_id
+      t.integer :member_id
 
       t.timestamps
     end

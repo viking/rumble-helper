@@ -2,7 +2,11 @@ class TeamsController < ApplicationController
   # GET /teams/1
   # GET /teams/1.xml
   def show
-    @team = Team.find(params[:id])
+    @team = Team.first
+    if @team.nil?
+      redirect_to :action => 'new'
+      return
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -13,6 +17,11 @@ class TeamsController < ApplicationController
   # GET /teams/new
   # GET /teams/new.xml
   def new
+    if Team.count > 0
+      redirect_to :action => 'show'
+      return
+    end
+
     @team = Team.new
 
     respond_to do |format|
@@ -29,12 +38,17 @@ class TeamsController < ApplicationController
   # POST /teams
   # POST /teams.xml
   def create
+    if Team.count > 0
+      redirect_to :action => 'show'
+      return
+    end
+
     @team = Team.new(params[:team])
 
     respond_to do |format|
       if @team.save
         flash[:notice] = 'Team was successfully created.'
-        format.html { redirect_to(team_url) }
+        format.html { redirect_to(new_account_url) }
         format.xml  { render :xml => @team, :status => :created, :location => @team }
       else
         format.html { render :action => "new" }
@@ -46,7 +60,7 @@ class TeamsController < ApplicationController
   # PUT /teams/1
   # PUT /teams/1.xml
   def update
-    @team = Team.find(params[:id])
+    @team = Team.first
 
     respond_to do |format|
       if @team.update_attributes(params[:team])
@@ -62,13 +76,13 @@ class TeamsController < ApplicationController
 
   # DELETE /teams/1
   # DELETE /teams/1.xml
-  def destroy
-    @team = Team.find(params[:id])
-    @team.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(root_url) }
-      format.xml  { head :ok }
-    end
-  end
+#  def destroy
+#    @team = Team.find(params[:id])
+#    @team.destroy
+#
+#    respond_to do |format|
+#      format.html { redirect_to(root_url) }
+#      format.xml  { head :ok }
+#    end
+#  end
 end

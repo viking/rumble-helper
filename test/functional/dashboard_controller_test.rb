@@ -2,6 +2,9 @@ require 'test_helper'
 
 class DashboardControllerTest < ActionController::TestCase
   def setup
+    @data = fixture_data('team_data')
+    Rumble.stubs(:team).with('team-shazbot').returns(@data)
+    @team = Factory(:team)
     @user = Factory(:user)
   end
 
@@ -26,6 +29,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal [task_2], assigns(:pending_tasks)
     assert_equal [task_3], assigns(:finished_tasks)
-    assert_equal [@user], assigns(:users)
+    assert_equal Member.all, assigns(:members)
   end
 end

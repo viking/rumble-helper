@@ -21,10 +21,10 @@ class TaskTest < ActiveSupport::TestCase
     assert !task.valid?
   end
 
-  test "has_many users" do
+  test "has_many members" do
     task = Factory(:task)
-    user = Factory(:user, :task => task)
-    assert_equal [user], task.users
+    members = Factory(:member, :task => task)
+    assert_equal [members], task.members
   end
 
   test "activation from todo" do

@@ -10,3 +10,7 @@ end
 Factory.define :team do |t|
   t.slug "team-shazbot"
 end
+
+Factory.define :member do |m|
+  m.nickname { Forgery(:internet).user_name }
+end

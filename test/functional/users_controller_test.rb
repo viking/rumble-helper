@@ -3,11 +3,13 @@ require 'test_helper'
 class UsersControllerTest < ActionController::TestCase
   setup do
     setup :activate_authlogic
+    @team = Factory(:team)
   end
 
   test "should get new" do
     get :new
     assert_response :success
+    assert_equal Member.all, assigns(:members)
   end
 
   test "should create user" do

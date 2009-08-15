@@ -3,12 +3,12 @@
 </div>
 <div class="clear"></div>
 
-<% @users.each_with_index do |user, i| %>
-  <div class="grid_<%= 12 / @num_users %>">
+<% @members.each_with_index do |member, i| %>
+  <div class="grid_<%= 12 / @num_members %>">
     <div class="bubble">
-      <h3><%= user.nickname %></h3>
-      <% if user.task %>
-      <div class="task <%= user.task.priority.downcase %>">
+      <h3><%= member.nickname %></h3>
+      <% if member.task %>
+      <div class="task <%= member.task.priority.downcase %>">
       </div>
       <% else %>
         Ain't doin' nothin'!
