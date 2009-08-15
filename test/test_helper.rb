@@ -32,12 +32,14 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
-  # -- they do not yet inherit this setting
+  # -- they do not yet inherit this config
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
 end
 
-def redirecting_to_yahoo?
-  controller.redirecting_to.to_s =~ /^https:\/\/open.login.yahooapis.com\/openid\/op\/auth/
+require 'mocha'
+
+def fixture_data(name)
+  YAML.load_file(ActionController::TestCase.send(:fixture_path)+"/files/#{name}.yml")
 end

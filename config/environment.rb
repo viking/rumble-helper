@@ -12,6 +12,8 @@ Rails::Initializer.run do |config|
   config.gem 'authlogic'
   config.gem 'rubyist-aasm', :lib => 'aasm', :source => 'http://gems.github.com'
   config.gem "authlogic-oid", :lib => "authlogic_openid"
+  config.gem 'httparty'
+  config.gem 'happymapper'
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.

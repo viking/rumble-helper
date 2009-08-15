@@ -7,9 +7,12 @@ class UserSessionsControllerTest < ActionController::TestCase
   end
 
   test "should create user session" do
-    user = Factory.create(:user)
-    post :create, :user_session => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
-    assert @response.redirected_to =~ /^https:\/\/open.login.yahooapis.com\/openid\/op\/auth/
+    @controller.stubs(:current_user).returns(nil)
+    user_session = mock
+    user_session.expects(:save).yields(true)
+    UserSession.expects(:new).with('openid_identifier' => "foo").returns(user_session)
+    post :create, :user_session => { :openid_identifier => "foo" }
+    assert_redirected_to root_url
   end
 
   test "should destroy user session" do

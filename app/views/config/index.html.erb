@@ -1,4 +1,4 @@
-<table class="settings">
+<table class="config">
   <thead>
     <tr>
       <th>Name</th>
@@ -6,10 +6,10 @@
     </tr>
   </thead>
   <tbody>
-    <% @settings.each do |setting| %>
+    <% @config.each do |config| %>
     <tr<%= cycle("", " class='alt'") %>>
-      <td class="name"><%= setting.name.titleize %></td>
-      <td id="setting_<%= setting.id %>" class="value"><%= setting.value %></td>
+      <td class="name"><%= config.name.titleize %></td>
+      <td id="config_<%= config.id %>" class="value"><%= config.value %></td>
     </tr>
     <% end %>
   </tbody>
@@ -37,11 +37,11 @@
         else if (e.keyCode == 13) {
           value = $(this).val();
           data = {
-            _method: 'put', 'setting[value]': value,
+            _method: 'put', 'config[value]': value,
             authenticity_token: '<%= @token %>'
           };
           $.ajax({
-            url: '<%= settings_url %>/'+id+'.xml',
+            url: '<%= config_url %>/'+id+'.xml',
             data: data,
             type: 'POST',
             complete: function() {

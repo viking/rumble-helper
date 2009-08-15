@@ -1,0 +1,61 @@
+--- 
+team: 
+  name: !str 
+    str: Team Shazbot
+    "@attributes": {}
+
+  id: 3
+  members: 
+  - twitter_username: !str 
+      str: kindlyviking
+      "@attributes": {}
+
+    nickname: !str 
+      str: viking
+      "@attributes": {}
+
+    github_username: !str 
+      str: viking
+      "@attributes": {}
+
+    type: Participant
+    irc_nick: !str 
+      str: viking
+      "@attributes": {}
+
+  - twitter_username: 
+    nickname: !str 
+      str: JPEG James
+      "@attributes": {}
+
+    github_username: 
+    type: Participant
+    irc_nick: 
+  - twitter_username: 
+    nickname: !str 
+      str: dupontct
+      "@attributes": {}
+
+    github_username: 
+    type: Participant
+    irc_nick: !str 
+      str: Aygar
+      "@attributes": {}
+
+  entry: 
+    name: !str 
+      str: lend.to
+      "@attributes": {}
+
+    updated_at: !timestamp 
+      at: "2009-08-15 16:04:43 Z"
+      "@attributes": {}
+
+    direct_url: !str 
+      str: http://shazbot.r09.railsrumble.com
+      "@attributes": {}
+
+    description: !str 
+      str: A web app to keep track of stuff you've let your friends borrow.
+      "@attributes": {}
+

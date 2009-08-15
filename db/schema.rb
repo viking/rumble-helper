@@ -9,7 +9,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090815170505) do
+ActiveRecord::Schema.define(:version => 20090815202942) do
+
+  create_table "members", :force => true do |t|
+    t.string   "nickname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "open_id_authentication_associations", :force => true do |t|
     t.integer "issued"
@@ -26,17 +32,17 @@ ActiveRecord::Schema.define(:version => 20090815170505) do
     t.string  "salt",       :null => false
   end
 
-  create_table "settings", :force => true do |t|
-    t.string   "name"
-    t.string   "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "tasks", :force => true do |t|
     t.string   "name"
     t.string   "priority"
     t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "teams", :force => true do |t|
+    t.string   "slug"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

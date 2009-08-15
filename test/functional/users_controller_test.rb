@@ -11,8 +11,22 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should create user" do
+    user = User.new
+    user.expects(:save).yields(true)
+    User.expects(:new).with('openid_identifier' => 'foo').returns(user)
+    post :create, :user => { :openid_identifier => "foo" }
+    assert_redirected_to root_url
+  end
+
+  test "should redirect to team_url if team is not set" do
+    Team.delete_all
+
+    user = User.new
+    user.expects(:save).yields(true)
+    User.expects(:new).returns(user)
+
     post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
-    assert @response.redirected_to =~ /^https:\/\/open.login.yahooapis.com\/openid\/op\/auth/
+    assert_redirected_to new_team_url
   end
 
   test "should show user" do
