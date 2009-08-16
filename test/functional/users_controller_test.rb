@@ -13,6 +13,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should create user" do
+    Factory(:task)
     user = User.new
     user.expects(:save).yields(true)
     User.expects(:new).with('openid_identifier' => 'foo').returns(user)
@@ -20,15 +21,13 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
-  test "should redirect to team_url if team is not set" do
-    Team.delete_all
-
+  test "should redirect from create to tasks_url if this is the first user" do
+    Task.delete_all
     user = User.new
     user.expects(:save).yields(true)
     User.expects(:new).returns(user)
-
     post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
-    assert_redirected_to new_team_url
+    assert_redirected_to tasks_url
   end
 
   test "should show user" do

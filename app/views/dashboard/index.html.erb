@@ -21,11 +21,11 @@
 
 <div class="grid_12">
   <h2>What's left to do?</h2>
-  <div class="bubble">
+  <div id="pending_tasks" class="bubble">
     <% if @pending_tasks.empty? %>
       You did everything?  Yeah right.
       Better <%= link_to 'add another task', new_task_url %>.
-    <% else %>
+    <% end %>
     <ul class="tasks">
     <% @pending_tasks.each do |task| %>
       <li class="<%= task.priority.downcase %>">
@@ -34,7 +34,6 @@
     <% end %>
     </ul>
     <div class="clear"></div>
-    <% end %>
   </div>
 </div>
 <div class="clear"></div>
@@ -42,10 +41,10 @@
 
 <div class="grid_12">
   <h2>What's finished?</h2>
-  <div class="bubble">
+  <div id="finished_tasks" class="bubble">
     <% if @finished_tasks.empty? %>
       You haven't finished squat!  Better get to it!
-    <% else %>
+    <% end %>
     <ul class="tasks">
     <% @finished_tasks.each do |task| %>
       <li class="<%= task.priority.downcase %>">
@@ -54,6 +53,5 @@
     <% end %>
     </ul>
     <div class="clear"></div>
-    <% end %>
   </div>
 </div>

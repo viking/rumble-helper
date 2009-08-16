@@ -12,8 +12,8 @@ class UsersController < ApplicationController
     @user.save do |result|
       if result
         flash[:notice] = "Account registered!"
-        if Team.count == 0
-          redirect_to new_team_url
+        if Task.count == 0
+          redirect_to tasks_url
         else
           redirect_back_or_default root_url
         end

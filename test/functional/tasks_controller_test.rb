@@ -21,7 +21,7 @@ class TasksControllerTest < ActionController::TestCase
       post :create, :task => Factory.attributes_for(:task)
     end
 
-    assert_redirected_to task_path(assigns(:task))
+    assert_redirected_to tasks_path
   end
 
   test "should show task" do

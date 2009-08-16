@@ -1,51 +1,26 @@
-<%= javascript_include_tag 'jquery.multiselect.min.js' %>
+<div class="grid_12">
+  <h1><%= @task.new_record? ? "New" : "Edit" %> task</h1>
+  <div class="bubble">
+    <% form_for(@task) do |f| %>
+      <%= f.error_messages %>
 
-<h1><%= @task.new_record? ? "New" : "Edit" %> task</h1>
+      <p>
+        <%= f.label :name %><br />
+        <%= f.text_field :name %>
+      </p>
+      <p>
+        <%= f.label :priority %><br />
+        <%= f.select :priority, Task::PRIORITIES %>
+      </p>
+      <p>
+        <%= f.label :status %><br />
+        <%= f.select :status, Task::STATUSES %>
+      </p>
+      <p>
+        <%= f.submit %>
+      </p>
+    <% end %>
+  </div>
 
-<% form_for(@task) do |f| %>
-  <%= f.error_messages %>
-
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :priority %><br />
-    <%= f.select :priority, Task::PRIORITIES %>
-  </p>
-  <p>
-    <%= f.label :status %><br />
-    <%= f.select :status, Task::STATUSES %>
-  </p>
-  <p>
-    People:<br/>
-    <table class="multiselect">
-      <tr>
-        <td>
-          <select multiple="multiple">
-            <%= options_from_collection_for_select(@undelegated_people, :id, :name) %>
-          </select>
-        </td>
-        <td>
-          <select name="task[task_delegations_attributes][][person_id]" multiple="multiple">
-          <%- @task.task_delegations.each do |delegation| -%>
-            <option value="<%= delegation.person.id %>"><%= delegation.person.name %></option>
-          <%- end -%>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td><input type="button" value="Add &raquo;"/></td>
-        <td><input type="button" value="&laquo; Remove"/></td>
-      </tr>
-    </table>
-  </p>
-  <p>
-    <%= f.submit %>
-  </p>
-<% end %>
-
-<%= link_to 'Back', tasks_path %>
-<% javascript_tag do %>
-  $('.multiselect').multiselect();
-<% end %>
+  <%= link_to 'Back', tasks_path %>
+</div>
