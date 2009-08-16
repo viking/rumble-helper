@@ -8,18 +8,17 @@
 <% form_for @user_session, :url => user_session_url, :html => {:id => "openid_form"} do |f| %>
   <%= f.error_messages %>
   <div id="openid_choice">
-    <p>Please click your account provider:</p>
+    What's your OpenID provider?
     <div id="openid_btns"></div>
   </div>
+  <div class="clear"></div>
 
   <div id="openid_input_area">
-    <input id="openid_identifier" name="user_session[openid_identifier]" type="text" value="http://" />
-    &nbsp;<input id="openid_submit" type="submit" value="Sign-In"/>
+    <div id="openid_label"></div>
+    <input id="openid_username" type="text" />
+    <%= f.hidden_field :openid_identifier, :value => "http://", :id => "openid_identifier" %>
   </div>
-  <noscript>
-    <p>OpenID is service that allows you to log-on to many different websites using a single indentity.
-    Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
-  </noscript>
+  <%= f.submit "Login" %>
 <% end %>
 </div>
 </div>

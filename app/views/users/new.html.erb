@@ -16,11 +16,15 @@
     What's your OpenID provider?
     <div id="openid_btns"></div>
   </div>
+  <div class="clear"></div>
 
   <div id="openid_input_area">
-    <%= f.text_field :openid_identifier, :value => "http://", :id => "openid_identifier" %>
-    <input id="openid_submit" type="submit" value="Sign-In"/>
+    <div id="openid_label"></div>
+    <input id="openid_username" type="text" />
+    <%= f.hidden_field :openid_identifier, :value => "http://", :id => "openid_identifier" %>
   </div>
+
+  <%= f.submit "Register" %>
 <% end %>
 </div>
 </div>
