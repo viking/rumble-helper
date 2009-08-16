@@ -9,6 +9,7 @@ class DashboardController < ApplicationController
       @finished_tasks = Task.finished
       @members = Member.all
       @num_members = @members.count
+      @auth_token = form_authenticity_token
     end
   end
 end

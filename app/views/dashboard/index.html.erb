@@ -1,3 +1,4 @@
+<%= javascript_include_tag 'dashboard' %>
 <div class="grid_12">
   <h2>Who's working on what?</h2>
 </div>
@@ -5,14 +6,16 @@
 
 <% @members.each_with_index do |member, i| %>
   <div class="grid_<%= 12 / @num_members %>">
-    <div class="bubble">
-      <h3><%= member.nickname %></h3>
+    <div id="member_<%= member.id %>" class="member<%= " droppable" unless member.task %>">
+      <div class="nickname"><%= member.nickname %></div>
+      <div class="current_task">
       <% if member.task %>
-      <div class="task <%= member.task.priority.downcase %>">
-      </div>
+        <%= task_bubble(member.task) %>
       <% else %>
         Ain't doin' nothin'!
       <% end %>
+      </div>
+      <div class="clear"></div>
     </div>
   </div>
 <% end %>
@@ -21,18 +24,14 @@
 
 <div class="grid_12">
   <h2>What's left to do?</h2>
-  <div id="pending_tasks" class="bubble">
+  <div id="pending_tasks" class="bubble droppable">
     <% if @pending_tasks.empty? %>
       You did everything?  Yeah right.
       Better <%= link_to 'add another task', new_task_url %>.
     <% end %>
-    <ul class="tasks">
     <% @pending_tasks.each do |task| %>
-      <li class="<%= task.priority.downcase %>">
-        <div><%=h task.name %></div>
-      </li>
+      <%= task_bubble(task) %>
     <% end %>
-    </ul>
     <div class="clear"></div>
   </div>
 </div>
@@ -41,17 +40,17 @@
 
 <div class="grid_12">
   <h2>What's finished?</h2>
-  <div id="finished_tasks" class="bubble">
+  <div id="finished_tasks" class="bubble droppable">
     <% if @finished_tasks.empty? %>
       You haven't finished squat!  Better get to it!
     <% end %>
-    <ul class="tasks">
     <% @finished_tasks.each do |task| %>
-      <li class="<%= task.priority.downcase %>">
-        <div><%=h task.name %></div>
-      </li>
+      <%= task_bubble(task) %>
     <% end %>
-    </ul>
     <div class="clear"></div>
   </div>
 </div>
+
+<script type="text/plain" id="tasks_url"><%= tasks_url %></script>
+<script type="text/plain" id="members_url"><%= members_url %></script>
+<script type="text/plain" id="auth_token"><%= @auth_token %></script>

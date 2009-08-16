@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :members
+
   map.resources :people
   map.resources :settings
   map.resources :tasks

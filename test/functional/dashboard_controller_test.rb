@@ -30,5 +30,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_equal [task_2], assigns(:pending_tasks)
     assert_equal [task_3], assigns(:finished_tasks)
     assert_equal Member.all, assigns(:members)
+    assert assigns(:auth_token)
   end
 end
