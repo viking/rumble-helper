@@ -1,37 +1,40 @@
-<%= javascript_include_tag 'dashboard' %>
+<%= javascript_include_tag 'jquery.rumblehelper' %>
 <div class="grid_12">
   <h2>Who's working on what?</h2>
 </div>
 <div class="clear"></div>
 
 <% @members.each_with_index do |member, i| %>
-  <div class="grid_<%= 12 / @num_members %>">
-    <div id="member_<%= member.id %>" class="member<%= " droppable" unless member.task %>">
-      <div class="nickname"><%= member.nickname %></div>
-      <div class="current_task">
-      <% if member.task %>
-        <%= task_bubble(member.task) %>
-      <% else %>
-        Ain't doin' nothin'!
-      <% end %>
-      </div>
-      <div class="clear"></div>
+<div class="grid_<%= 12 / @num_members %>">
+  <div id="member_<%= member.id %>" class="bubble member">
+    <div class="nickname"><%= member.nickname %></div>
+    <div class="tasks">
+    <% if member.task %>
+      <%= task_bubble(member.task) %>
+    <% else %>
+      Ain't doin' nothin'!
+    <% end %>
     </div>
+    <div class="clear"></div>
   </div>
+</div>
 <% end %>
 <div class="clear"></div>
 <br/>
 
 <div class="grid_12">
   <h2>What's left to do?</h2>
-  <div id="pending_tasks" class="bubble droppable">
+  <div id="pending_tasks" class="bubble">
+    <div class="tasks">
     <% if @pending_tasks.empty? %>
       You did everything?  Yeah right.
       Better <%= link_to 'add another task', new_task_url %>.
-    <% end %>
-    <% @pending_tasks.each do |task| %>
+    <% else %>
+      <% @pending_tasks.each do |task| %>
       <%= task_bubble(task) %>
+      <% end %>
     <% end %>
+    </div>
     <div class="clear"></div>
   </div>
 </div>
@@ -40,13 +43,16 @@
 
 <div class="grid_12">
   <h2>What's finished?</h2>
-  <div id="finished_tasks" class="bubble droppable">
+  <div id="finished_tasks" class="bubble">
+    <div class="tasks">
     <% if @finished_tasks.empty? %>
       You haven't finished squat!  Better get to it!
-    <% end %>
-    <% @finished_tasks.each do |task| %>
+    <% else %>
+      <% @finished_tasks.each do |task| %>
       <%= task_bubble(task) %>
+      <% end %>
     <% end %>
+    </div>
     <div class="clear"></div>
   </div>
 </div>
@@ -54,3 +60,8 @@
 <script type="text/plain" id="tasks_url"><%= tasks_url %></script>
 <script type="text/plain" id="members_url"><%= members_url %></script>
 <script type="text/plain" id="auth_token"><%= @auth_token %></script>
+<% javascript_tag do %>
+  $(function() {
+    $.rumblehelper.dashboard.init();
+  });
+<% end %>

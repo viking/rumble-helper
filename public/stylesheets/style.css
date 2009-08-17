@@ -112,19 +112,20 @@ a:hover { color: #fff; background-color:#000; }
 .task {
   float: left;
   padding: 1em;
-  margin: 0.3em;
+  margin: 0.3em 0.3em 1.3em 0.3em;
   border: 2px solid #222;
   width: 8em;
   height: 3em;
   text-align: center;
+  color: white;
   -moz-border-radius: 15px;
   -webkit-border-radius: 15px;
 }
 
-.critical { background-color: red; color: white; }
-.high { background-color: orange; color: white; }
-.medium { background-color: blue; color: white; }
-.low { background-color: green; color: white; }
+.critical { background: red url(../images/red-shine.jpg) repeat-x top; }
+.high { background: orange url(../images/orange-shine.jpg) repeat-x top; }
+.medium { background: blue url(../images/blue-shine.jpg) repeat-x top; }
+.low { background: green url(../images/green-shine.jpg) repeat-x top; }
 
 .bubble {
   background-color: white;
@@ -133,11 +134,16 @@ a:hover { color: #fff; background-color:#000; }
   padding: 1em;
 }
 
+#pending_tasks,
+#finished_tasks,
 .member {
-  background-color: white;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
+  padding: 0;
 }
+
+.member {
+  height: 10.5em;
+}
+
 .member .nickname {
   -moz-border-radius-topleft: 10px;
   -moz-border-radius-topright: 10px;
@@ -146,14 +152,12 @@ a:hover { color: #fff; background-color:#000; }
   font-weight: bold;
   font-size: larger;
   padding: 0.5em;
-  background-color: #222;
+  background: #222 url(../images/black-shine.jpg) repeat-x top;
   color: white;
 }
-.member .current_task {
+
+.tasks {
   padding: 1em;
-}
-.member .task {
-  margin-bottom: 1em;
 }
 
 .ralign {
@@ -165,4 +169,9 @@ a:hover { color: #fff; background-color:#000; }
 
 .draggable {
   cursor: move;
+  z-index: 100;
+}
+
+.ui-state-disabled {
+  opacity: 1;
 }
