@@ -22,10 +22,10 @@ class MemberTest < ActiveSupport::TestCase
     assert_equal 'stalled', task_1.reload.status
   end
 
-  test "#finish_task" do
+  test "finishes old task when finish_task is true" do
     task = Factory(:task)
     member = Factory(:member, :task => task)
-    member.finish_task!
+    member.update_attributes('task_id' => nil, 'finish_task' => true)
     assert_equal 'done', task.reload.status
   end
 end

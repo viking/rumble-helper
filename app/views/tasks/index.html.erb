@@ -2,19 +2,34 @@
   <h1>Tasks</h1>
   <div class="bubble">
     <%- if @tasks.empty? -%>
+      <p>
       Great!  Signup successful!  Now you can add some tasks that
       you want your team to accomplish.
-    <%- end %>
-
-    <ul class="tasks">
-    <% @tasks.each do |task| %>
-      <li class="<%= task.priority.downcase %>">
-        <div><%=h task.name %></div>
-      </li>
-    <% end %>
+      </p>
+    <%- else -%>
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+      <%- @tasks.each do |task| -%>
+        <tr<%= cycle("", " class='alt'") %>>
+          <td><%=h task.name %></td>
+          <td><%= task.priority %></td>
+          <td><%= task.status %></td>
+          <td><%= link_to(image_tag('edit.png'), edit_task_url(task)) %></td>
+          <td><%= link_to(image_tag('trash.png'), task_url(task), :confirm => "Are you sure?", :method => :delete) %></td>
+        </tr>
+      <%- end %>
+      </tbody>
     </table>
-    <br />
-    <div class="clear"></div>
+    <%- end -%>
     <%= link_to 'New task', new_task_path %>
   </div>
 </div>

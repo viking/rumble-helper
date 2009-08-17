@@ -175,3 +175,28 @@ a:hover { color: #fff; background-color:#000; }
 .ui-state-disabled {
   opacity: 1;
 }
+
+table.list {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-bottom: 1px solid #222;
+}
+table.list th {
+  text-align: left;
+  background-color: #222;
+  color: white;
+  padding: 0.5em;
+}
+table.list td {
+  padding: 0.5em;
+}
+table.list a:hover {
+  background: transparent;
+}
+table.list img {
+  vertical-align: middle;
+  border: 0;
+}
+table.list tr.alt td {
+  background-color: #eee;
+}

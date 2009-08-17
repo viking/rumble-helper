@@ -18,6 +18,7 @@
         }
       });
       $('#pending_tasks').droppable(this.pending_droppable_options);
+      $('#finished_tasks').droppable(this.finished_droppable_options);
     },
 
     member_droppable_options: {
@@ -45,18 +46,45 @@
       }
     },
 
+    finished_droppable_options: {
+      accept: '.in_progress, .todo, .stalled',
+      drop: function(event, ui) {
+        task_id = ui.draggable.attr('id').substring(5);
+
+        member = ui.draggable.parents('.member');
+        member_id = null;
+        if (member.length == 1) {
+          member_id = member.attr('id').substring(7);
+        }
+
+        $.rumblehelper.dashboard.move_draggable(ui.draggable, this);
+
+        if (member_id) {
+          $.rumblehelper.dashboard.update_member(member_id, '', true);
+        }
+        else {
+          $.rumblehelper.dashboard.update_task(task_id, 'done');
+        }
+      }
+    },
+
     move_draggable: function(draggable, destination) {
       source = draggable.parent();
+      destination = $(destination);
 
       new_obj = draggable.clone().attr('style', '');
-      tasks = $(destination).find('.tasks')
+      tasks = destination.find('.tasks')
       if (tasks.find('.task').length == 0) {
         tasks.html(new_obj);
       }
       else {
         tasks.append(new_obj);
       }
-      new_obj.draggable();
+      if (destination.attr('id') == "finished_tasks") {
+        new_obj.removeClass('draggable');
+      } else {
+        new_obj.draggable();
+      }
       draggable.remove();
 
       if (new_obj.hasClass('todo') || new_obj.hasClass('stalled')) {
@@ -80,15 +108,31 @@
       }
     },
 
-    update_member: function(member_id, task_id) {
+    update_member: function(member_id, task_id, finish_task) {
+      data = {
+        'member[task_id]': task_id,
+        'authenticity_token': this.options.auth_token,
+        '_method': 'put'
+      };
+      if (finish_task) {
+        data['member[finish_task]'] = true;
+      }
+      $.ajax({
+        type: 'POST', data: data,
+        url: this.options.members_url+'/'+member_id+'.xml',
+        complete: function() { }
+      });
+    },
+
+    update_task: function(task_id, status) {
       $.ajax({
         type: 'POST',
         data: {
-          'member[task_id]': task_id,
+          'task[status]': status,
           'authenticity_token': this.options.auth_token,
           '_method': 'put'
         },
-        url: this.options.members_url+'/'+member_id+'.xml',
+        url: this.options.tasks_url+'/'+task_id+'.xml',
         complete: function() { }
       });
     }

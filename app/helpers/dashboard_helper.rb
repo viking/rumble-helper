@@ -1,8 +1,7 @@
 module DashboardHelper
   def task_bubble(task)
-    content_tag('div', task.name, {
-      :id => "task_#{task.id}",
-      :class => "task #{task.priority.downcase} draggable #{task.status}"
-    })
+    klass = "task #{task.priority.downcase} #{task.status}"
+    klass << " draggable"   unless task.status == "done"
+    content_tag('div', task.name, :id => "task_#{task.id}", :class => klass)
   end
 end
