@@ -19,7 +19,7 @@ class Task < ActiveRecord::Base
     transitions :to => :done, :from => [:in_progress]
   end
 
-  has_many :members
+  has_many :members, :dependent => :nullify
 
   validates_inclusion_of :priority, :in => PRIORITIES
   validates_inclusion_of :status, :in => STATUSES

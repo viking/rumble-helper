@@ -110,7 +110,6 @@
     },
 
     update_pending_tasks: function(pending) {
-      console.log(pending);
       if (pending.find('.task').length == 0) {
         pending.html("You did everything?  Yeah right.  Better <a href='"+this.options.tasks_url+"/new'>add another task</a>.");
       }

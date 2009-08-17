@@ -56,4 +56,11 @@ class TaskTest < ActiveSupport::TestCase
     assert task.status_changed_at
     assert (task.created_at - task.status_changed_at) < 1
   end
+
+  test "should delete task_id from members on destroy" do
+    task = Factory(:task)
+    member = Factory(:member, :task => task)
+    task.destroy
+    assert_nil member.reload.task_id
+  end
 end
