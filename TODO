@@ -1,4 +1,8 @@
-- make tasks/settings writable by logged in users only
-- add drag/drop for switching/activating/finishing tasks
-- need trash and finish icons in task bubbles
-- fix openid-jquery
+- change setup phase to use rumble api key (when openid identifiers are available)
+- add drag/drop for finishing tasks
+- need trash and edit icons in task bubbles
+- authorization (?)
+  - must be logged in to change anything
+  - allow any user to set tasks for users who don't register
+  - only allow current user to change his/her tasks
+  - allow user to force task change for other user with a warning (?)
