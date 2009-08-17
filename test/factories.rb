@@ -5,6 +5,7 @@ end
 
 Factory.define :task do |t|
   t.priority { %w{Critical High Medium Low}.random }
+  t.description { Forgery(:lorem_ipsum).sentence }
 end
 
 Factory.define :team do |t|

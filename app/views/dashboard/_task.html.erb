@@ -1,0 +1,12 @@
+<div id="task_<%= task.id %>" class="task <%= task.priority.downcase %> <%= task.status %> <%= 'ui-draggable ' if task.status != 'done' %>ui-widget ui-widget-content ui-corner-all">
+  <div class="task_name ui-widget-header ui-corner-all ui-helper-clearfix">
+    <span><%= task.name %></span>
+    <div class="icons">
+      <%= link_to(ui_icon('trash'), task_url(task), :confirm => "Are you sure you want to delete this task?", :method => :delete) %>
+    </div>
+  </div>
+  <div class="task_content ui-widget-content">
+    <span class="status"><%= task.status.humanize %></span><br/>
+    <div class="timeago" title="<%= task.status_changed_at.iso8601 %>"><%= task.status_changed_at %></div>
+  </div>
+</div>

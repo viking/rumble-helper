@@ -35,8 +35,11 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name"
+    t.string   "description"
     t.string   "priority"
     t.string   "status"
+    t.datetime "status_changed_at"
+    t.integer  "total_effort_spent"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

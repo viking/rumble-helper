@@ -50,4 +50,10 @@ class TaskTest < ActiveSupport::TestCase
     task.finish!
     assert_equal 'done', task.status
   end
+
+  test "sets status_changed_at" do
+    task = Factory(:task)
+    assert task.status_changed_at
+    assert (task.created_at - task.status_changed_at) < 1
+  end
 end

@@ -2,7 +2,9 @@
   $.rumblehelper = {};
 
   $.rumblehelper.dashboard = {
-    options: {},
+    options: { },
+
+    clear_fix: $('<div class="clear"></div>'),
 
     init: function() {
       $.extend(this.options, {
@@ -10,7 +12,8 @@
         members_url: $('#members_url').html(),
         auth_token: $('#auth_token').html()
       });
-      $('.draggable').draggable();
+      $('.task .timeago').timeago();
+      $('.ui-draggable').draggable();
       $('.member').droppable(this.member_droppable_options).each(function() {
         obj = $(this);
         if (obj.find('.task').length == 1) {
@@ -76,26 +79,30 @@
       tasks = destination.find('.tasks')
       if (tasks.find('.task').length == 0) {
         tasks.html(new_obj);
+        tasks.append(this.clear_fix);
       }
       else {
-        tasks.append(new_obj);
-      }
-      if (destination.attr('id') == "finished_tasks") {
-        new_obj.removeClass('draggable');
-      } else {
-        new_obj.draggable();
+        tasks.prepend(new_obj);
       }
       draggable.remove();
 
-      if (new_obj.hasClass('todo') || new_obj.hasClass('stalled')) {
-        new_obj.removeClass('todo').removeClass('stalled').addClass('in_progress');
-        this.update_pending_tasks(source);
+      if (destination.attr('id') == "finished_tasks") {
+        new_obj.removeClass('ui-draggable');
+        new_obj.find('.status').html('Done');
+      } else {
+        new_obj.draggable();
+        if (new_obj.hasClass('todo') || new_obj.hasClass('stalled')) {
+          new_obj.removeClass('todo').removeClass('stalled').addClass('in_progress');
+          new_obj.find('.status').html('In progress');
+          this.update_pending_tasks(source);
+        } else if (new_obj.hasClass('in_progress')) {
+          new_obj.removeClass('in_progress').addClass('stalled');
+          new_obj.find('.status').html('Stalled');
+          this.update_member_tasks(source);
+          source.parent().droppable('enable');
+        }
       }
-      else if (new_obj.hasClass('in_progress')) {
-        new_obj.removeClass('in_progress').addClass('stalled');
-        this.update_member_tasks(source);
-        source.parent().droppable('enable');
-      }
+      new_obj.find('.timeago').attr('title', this.current_iso8601_date).timeago();
     },
 
     update_member_tasks: function(member) {
@@ -103,6 +110,7 @@
     },
 
     update_pending_tasks: function(pending) {
+      console.log(pending);
       if (pending.find('.task').length == 0) {
         pending.html("You did everything?  Yeah right.  Better <a href='"+this.options.tasks_url+"/new'>add another task</a>.");
       }
@@ -135,6 +143,28 @@
         url: this.options.tasks_url+'/'+task_id+'.xml',
         complete: function() { }
       });
+    },
+
+    current_iso8601_date: function() {
+      d = new Date();
+      year = d.getUTCFullYear();
+      month = d.getUTCMonth() + 1;
+      if (month < 10)
+        month = '0' + month;
+      day = d.getUTCDate();
+      if (day < 10)
+        day = '0' + day;
+      hour = d.getUTCHours();
+      if (hour < 10)
+        hour = '0' + hour;
+      minute = d.getUTCMinutes();
+      if (minute < 10)
+        minute = '0' + minute;
+      second = d.getUTCSeconds();
+      if (second < 10)
+        second = '0' + second;
+
+      return year+'-'+month+'-'+day+'T'+hour+':'+minute+':'+second+'Z';
     }
   }
 })(jQuery);

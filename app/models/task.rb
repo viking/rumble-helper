@@ -26,4 +26,13 @@ class Task < ActiveRecord::Base
 
   named_scope :finished, :conditions => { :status => 'done' }
   named_scope :pending, :conditions => "status IN ('todo', 'stalled')"
+
+  before_save :set_status_changed_at
+
+  private
+    def set_status_changed_at
+      if status_changed?
+        self.status_changed_at = Time.now
+      end
+    end
 end
