@@ -5,7 +5,7 @@ $(function() {
 
   $('.draggable').draggable();
   $('.member.droppable').droppable({
-    accept: '.draggable',
+    accept: '.todo, .stalled',
     drop: function(event, ui) {
       obj = ui.draggable.clone().attr('style', '');
       status = null;
