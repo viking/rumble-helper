@@ -11,6 +11,12 @@ class TasksControllerTest < ActionController::TestCase
     assert_not_nil assigns(:tasks)
   end
 
+  test "should clear location for index" do
+    session[:return_to] = '/yomamma'
+    get :index
+    assert_nil session[:return_to]
+  end
+
   test "should get new" do
     get :new
     assert_response :success

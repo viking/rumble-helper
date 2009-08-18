@@ -1,6 +1,6 @@
 - change setup phase to use rumble api key (when openid identifiers are available)
-- need edit icon in task bubbles
-- fix javascript weirdness
+- hook up info icon in task bubbles
+- make adding lots of tasks easier
 - authorization (?)
   - must be logged in to change anything
   - allow any user to set tasks for users who don't register

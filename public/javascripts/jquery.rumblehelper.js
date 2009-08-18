@@ -1,4 +1,7 @@
 (function($) {
+  $.timeago.settings.strings.prefixAgo = 'for';
+  $.timeago.settings.strings.suffixAgo = null;
+
   $.rumblehelper = {};
 
   $.rumblehelper.dashboard = {
@@ -12,8 +15,10 @@
         members_url: $('#members_url').html(),
         auth_token: $('#auth_token').html()
       });
-      $('.task .timeago').timeago();
-      $('.ui-draggable').draggable();
+
+      // this could be DRY'd up a little
+      $('.task').rh_setup_tasks();
+      $('.ui-draggable').draggable({revert: true});
       $('.member').droppable(this.member_droppable_options).each(function() {
         obj = $(this);
         if (obj.find('.task').length == 1) {
@@ -28,7 +33,7 @@
       accept: '.todo, .stalled',
       drop: function(event, ui) {
         task_id = ui.draggable.attr('id').substring(5);
-        $.rumblehelper.dashboard.move_draggable(ui.draggable, this);
+        $.rumblehelper.dashboard.move_draggable(ui, this);
 
         // update member
         member_id = $(this).attr('id').substring(7);
@@ -42,7 +47,7 @@
       accept: '.in_progress',
       drop: function(event, ui) {
         member_id = ui.draggable.parents('.member').attr('id').substring(7);
-        $.rumblehelper.dashboard.move_draggable(ui.draggable, this);
+        $.rumblehelper.dashboard.move_draggable(ui, this);
 
         // update member
         $.rumblehelper.dashboard.update_member(member_id, '');
@@ -60,7 +65,7 @@
           member_id = member.attr('id').substring(7);
         }
 
-        $.rumblehelper.dashboard.move_draggable(ui.draggable, this);
+        $.rumblehelper.dashboard.move_draggable(ui, this);
 
         if (member_id) {
           $.rumblehelper.dashboard.update_member(member_id, '', true);
@@ -71,47 +76,49 @@
       }
     },
 
-    move_draggable: function(draggable, destination) {
-      source = draggable.parent();
+    move_draggable: function(ui, destination) {
+      source = ui.draggable.parents('.tasks_bubble');
       destination = $(destination);
 
-      new_obj = draggable.clone().attr('style', '');
-      tasks = destination.find('.tasks')
-      if (tasks.find('.task').length == 0) {
-        tasks.html(new_obj);
-        tasks.append(this.clear_fix);
-      }
-      else {
-        tasks.prepend(new_obj);
-      }
-      draggable.remove();
+      new_obj = this.clone_task(ui.draggable);
+      destination.find('.tasks').prepend(new_obj);
+      ui.helper.remove();
+      ui.draggable.remove();
+      this.toggle_task_boxes(source);
+      this.toggle_task_boxes(destination);
 
       if (destination.attr('id') == "finished_tasks") {
         new_obj.removeClass('ui-draggable');
         new_obj.find('.status').html('Done');
       } else {
-        new_obj.draggable();
+        new_obj.draggable({revert: true});
         if (new_obj.hasClass('todo') || new_obj.hasClass('stalled')) {
           new_obj.removeClass('todo').removeClass('stalled').addClass('in_progress');
           new_obj.find('.status').html('In progress');
-          this.update_pending_tasks(source);
         } else if (new_obj.hasClass('in_progress')) {
           new_obj.removeClass('in_progress').addClass('stalled');
           new_obj.find('.status').html('Stalled');
-          this.update_member_tasks(source);
-          source.parent().droppable('enable');
+          source.droppable('enable');
         }
       }
       new_obj.find('.timeago').attr('title', this.current_iso8601_date).timeago();
     },
 
-    update_member_tasks: function(member) {
-      member.html("Ain't doin' nothin'!");
+    clone_task: function(task) {
+      new_obj = task.clone().rh_setup_tasks();
+      new_obj.attr('style', '').attr('title', this.current_iso8601_date)
+        .find('.icons').hide();
+      return new_obj;
     },
 
-    update_pending_tasks: function(pending) {
-      if (pending.find('.task').length == 0) {
-        pending.html("You did everything?  Yeah right.  Better <a href='"+this.options.tasks_url+"/new'>add another task</a>.");
+    toggle_task_boxes: function(obj) {
+      if (obj.find('.task').length == 0) {
+        obj.find('.tasks').hide();
+        obj.find('.no_tasks').show();
+      }
+      else {
+        obj.find('.tasks').show();
+        obj.find('.no_tasks').hide();
       }
     },
 
@@ -144,6 +151,35 @@
       });
     },
 
+    edit_task: function() {
+      task_id = $(this).parents('.task').attr('id').substring(5);
+      window.location = $.rumblehelper.dashboard.options.tasks_url+'/'+task_id+'/edit';
+    },
+
+    delete_task: function() {
+      confirmation = confirm('Do you really want to delete this task?');
+      if (confirmation) {
+        dashboard = $.rumblehelper.dashboard;
+        task = $(this).parents('.task');
+        task_id = task.attr('id').substring(5);
+        $.ajax({
+          type: 'POST',
+          data: {
+            'authenticity_token': dashboard.options.auth_token,
+            '_method': 'delete'
+          },
+          url: dashboard.options.tasks_url+'/'+task_id+'.xml',
+          complete: function() { }
+        });
+        task.fadeOut('fast', function() {
+          obj = $(this);
+          source = obj.parents('.tasks_bubble');
+          obj.remove();
+          dashboard.toggle_task_boxes(source);
+        });
+      }
+    },
+
     current_iso8601_date: function() {
       d = new Date();
       year = d.getUTCFullYear();
@@ -165,5 +201,26 @@
 
       return year+'-'+month+'-'+day+'T'+hour+':'+minute+':'+second+'Z';
     }
-  }
+  };
+
+  $.fn.rh_setup_tasks = function() {
+    this.find('.timeago').timeago();
+    this.find('.ui-icon-trash').click($.rumblehelper.dashboard.delete_task);
+    this.find('.ui-icon-wrench').click($.rumblehelper.dashboard.edit_task);
+    this.hover(
+      function() { $(this).find('.icons').fadeIn(100); },
+      function() { $(this).find('.icons').fadeOut(100); }
+    );
+
+    /*
+    this.each(function() {
+      description = $(this).find('.description');
+      if (description.length > 0) {
+        $(this).find('.ui-icon-info').tooltip({ showBody: description.html() });
+      }
+    });
+    */
+    return this;
+  };
+
 })(jQuery);

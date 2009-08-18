@@ -5,7 +5,10 @@ class TasksController < ApplicationController
     @tasks = Task.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html do
+        clear_location
+        render :action => 'index'
+      end
       format.xml  { render :xml => @tasks }
     end
   end
@@ -46,7 +49,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.save
         flash[:notice] = 'Task was successfully created.'
-        format.html { redirect_to tasks_url }
+        format.html { redirect_back_or_default tasks_url }
         format.xml  { render :xml => @task, :status => :created, :location => @task }
       else
         format.html { render :action => "new" }
@@ -63,7 +66,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update_attributes(params[:task])
         flash[:notice] = 'Task was successfully updated.'
-        format.html { redirect_to(@task) }
+        format.html { redirect_back_or_default task_url(@task) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +82,7 @@ class TasksController < ApplicationController
     @task.destroy
 
     respond_to do |format|
-      format.html { redirect_to(tasks_url) }
+      format.html { redirect_back_or_default tasks_url }
       format.xml  { head :ok }
     end
   end

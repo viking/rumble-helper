@@ -5,6 +5,8 @@ class DashboardController < ApplicationController
     elsif User.count == 0
       redirect_to new_account_url
     else
+      store_location
+
       @pending_tasks = Task.pending
       @finished_tasks = Task.finished
       @members = Member.all

@@ -32,4 +32,9 @@ class DashboardControllerTest < ActionController::TestCase
     assert_equal Member.all, assigns(:members)
     assert assigns(:auth_token)
   end
+
+  test "should store location for index" do
+    get :index
+    assert_equal root_path, session[:return_to]
+  end
 end

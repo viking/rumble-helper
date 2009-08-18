@@ -112,8 +112,11 @@ a:hover { color: #fff; background-color:#000; }
 .task {
   float: left;
   padding: 0.2em;
-  width: 11em;
+  width: 12.5em;
   margin: 0 0.3em;
+}
+.task .description {
+  display: none;
 }
 .task_name {
   padding: 0.5em 0.3em 0.3em 1em;
@@ -126,6 +129,8 @@ a:hover { color: #fff; background-color:#000; }
 .task_name .icons {
   position: absolute;
   right: 0.3em;
+  display: none;
+  background-color: #222;
 }
 .task_name .ui-icon {
   background-image: url(../images/ui-icons_ffffff_256x240.png);
@@ -135,6 +140,9 @@ a:hover { color: #fff; background-color:#000; }
   padding: 0.5em;
   background: transparent;
   border: 0;
+}
+.task_content .status {
+  font-weight: bold;
 }
 
 .critical .task_name {
@@ -161,9 +169,10 @@ a:hover { color: #fff; background-color:#000; }
   padding: 1em;
 }
 
-#pending_tasks,
-#finished_tasks,
-.member {
+.tasks_bubble {
+  background-color: white;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
   padding: 0;
 }
 
@@ -179,8 +188,12 @@ a:hover { color: #fff; background-color:#000; }
   color: white;
 }
 
-.tasks {
+.tasks, .no_tasks, .padded {
   padding: 1em;
+}
+
+.hidden {
+  display: none;
 }
 
 .ralign {
@@ -203,6 +216,7 @@ table.list {
   border-collapse: collapse;
   border-spacing: 0;
   border-bottom: 1px solid #222;
+  width: 100%;
 }
 table.list th {
   text-align: left;

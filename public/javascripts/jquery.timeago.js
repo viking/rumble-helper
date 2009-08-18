@@ -1,5 +1,5 @@
 /*
- * timeago: a jQuery plugin, version: 0.7.1 (2009-02-18)
+ * timeago: a jQuery plugin, version: 0.7.2 (2009-07-30)
  * @requires jQuery v1.2 or later
  *
  * Timeago is a jQuery plugin that makes it easy to support automatically
@@ -25,7 +25,6 @@
     settings: {
       refreshMillis: 60000,
       allowFuture: false,
-			numbers: [ "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" ],
       strings: {
         prefixAgo: null,
         prefixFromNow: null,
@@ -116,12 +115,9 @@
 
   function substitute(stringOrFunction, value) {
     var string = $.isFunction(stringOrFunction) ? stringOrFunction(value) : stringOrFunction;
-		var number = $t.settings.numbers[value] || value;
-    return string.replace(/%d/i, number);
+    return string.replace(/%d/i, value);
   }
 
   // fix for IE6 suckage
-  if ($.browser.msie && $.browser.version < 7.0) {
-    document.createElement('abbr');
-  }
+  document.createElement('abbr');
 })(jQuery);

@@ -1,4 +1,5 @@
-<div class="grid_12">
+<%- @subtitle = 'Tasks' -%>
+<div class="prefix_2 grid_8 suffix_2">
   <h1>Tasks</h1>
   <div class="bubble">
     <%- if @tasks.empty? -%>
@@ -22,7 +23,7 @@
         <tr<%= cycle("", " class='alt'") %>>
           <td><%=h task.name %></td>
           <td><%= task.priority %></td>
-          <td><%= task.status %></td>
+          <td><%= task.status.humanize %></td>
           <td><%= link_to(image_tag('edit.png'), edit_task_url(task)) %></td>
           <td><%= link_to(image_tag('trash.png'), task_url(task), :confirm => "Are you sure?", :method => :delete) %></td>
         </tr>
