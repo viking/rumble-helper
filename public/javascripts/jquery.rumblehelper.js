@@ -19,7 +19,13 @@
 
       $('.task').rh_setup_tasks();
       if (logged_in) {
-        $('.member').droppable(this.member_droppable_options);
+        $('.member').each(function() {
+          obj = $(this);
+          obj.droppable($.rumblehelper.dashboard.member_droppable_options);
+          if (obj.find('.task').length == 1) {
+            obj.droppable('disable');
+          }
+        });
         $('#pending_tasks').droppable(this.pending_droppable_options);
         $('#finished_tasks').droppable(this.finished_droppable_options);
       }
@@ -117,7 +123,7 @@
       new_obj = task.clone().rh_setup_tasks()
         .attr('style', '').attr('title', this.current_iso8601_date)
         .removeClass('ui-draggable-dragging');
-      new_obj.find('.icons').hide();
+      new_obj.find('.icons').css('opacity', '1').hide();
       return new_obj;
     },
 
