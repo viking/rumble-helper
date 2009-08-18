@@ -210,7 +210,7 @@
     dashboard = $.rumblehelper.dashboard;
     this.find('.timeago').timeago();
 
-    if (dashboard.logged_in) {
+    if (dashboard.options.logged_in) {
       this.find('.ui-icon-trash').click(dashboard.delete_task);
       this.find('.ui-icon-wrench').click(dashboard.edit_task);
       this.hover(
@@ -219,14 +219,19 @@
       );
     }
 
-    /*
     this.each(function() {
       description = $(this).find('.description');
       if (description.length > 0) {
-        $(this).find('.ui-icon-info').tooltip({ showBody: description.html() });
+        $(this).find('.ui-icon-info').hover(
+          function(e) {
+            description.fadeIn(100);
+          },
+          function(e) {
+            description.fadeOut(100);
+          }
+        );
       }
     });
-    */
     return this;
   };
 

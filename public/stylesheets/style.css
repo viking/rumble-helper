@@ -64,6 +64,13 @@ a:hover { color: #fff; background-color:#000; }
   background-color: #333;
   border-bottom: 2px solid #222;
 }
+#header a,
+#header a:visited,
+#header a:hover {
+  color: white;
+  background: transparent;
+  text-decoration: none;
+}
 #header .grid_12 {
   padding: 1em 0;
 }
@@ -114,9 +121,17 @@ a:hover { color: #fff; background-color:#000; }
   padding: 0.2em;
   width: 13em;
   margin: 0 0.2em;
+  position: relative;
 }
 .task .description {
   display: none;
+  position: absolute;
+  width: 15em;
+  padding: 1em;
+  background: white;
+  border: 2px solid #222;
+  right: -16em;
+  top: 0;
 }
 .task_name {
   padding: 0.5em 0.3em 0.3em 0.7em;

@@ -1,4 +1,3 @@
 - change setup phase to use rumble api key (when openid identifiers are available)
-- hook up info icon in task bubbles
 - make adding lots of tasks easier
 - allow dragging tasks from one member to another
