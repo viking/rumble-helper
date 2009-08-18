@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  before_filter :require_user, :except => [ :index, :show ]
+
   # GET /tasks
   # GET /tasks.xml
   def index
@@ -16,11 +18,14 @@ class TasksController < ApplicationController
   # GET /tasks/1
   # GET /tasks/1.xml
   def show
-    @task = Task.find(params[:id])
-
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @task }
+      format.html do
+        redirect_to tasks_url
+      end
+      format.xml do
+        task = Task.find(params[:id])
+        render :xml => task
+      end
     end
   end
 

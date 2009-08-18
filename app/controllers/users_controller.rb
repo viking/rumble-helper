@@ -3,12 +3,22 @@ class UsersController < ApplicationController
   before_filter :require_user, :only => [:show, :edit, :update]
 
   def new
-    @user = User.new
-    @members = Member.all
+    @members = Member.unassigned
+    if @members.empty?
+      redirect_to root_url
+    else
+      @user = User.new
+    end
   end
 
   def create
+    @members = Member.unassigned
+    if @members.empty?
+      redirect_to root_url
+      return
+    end
     @user = User.new(params[:user])
+
     @user.save do |result|
       if result
         flash[:notice] = "Account registered!"

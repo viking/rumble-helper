@@ -2,48 +2,40 @@ require 'test_helper'
 
 class MembersControllerTest < ActionController::TestCase
   def setup
+    activate_authlogic
     @member = Factory(:member)
   end
 
-  test "should get index" do
+  test "should redirect from index to root" do
     get :index
+    assert_redirected_to root_url
+  end
+
+  test "should render index when requesting xml" do
+    get :index, :format => 'xml'
     assert_response :success
-    assert_not_nil assigns(:members)
+    assert_equal [@member].to_xml, @response.body
   end
 
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
-
-  test "should create member" do
-    assert_difference('Member.count') do
-      post :create, :member => { }
-    end
-
-    assert_redirected_to member_path(assigns(:member))
-  end
-
-  test "should show member" do
+  test "should redirect from show to root" do
     get :show, :id => @member.to_param
-    assert_response :success
+    assert_redirected_to root_url
   end
 
-  test "should get edit" do
-    get :edit, :id => @member.to_param
+  test "should render show when requesting xml" do
+    get :show, :id => @member.to_param, :format => 'xml'
     assert_response :success
+    assert_equal @member.to_xml, @response.body
   end
 
   test "should update member" do
+    UserSession.create(Factory(:user))
     put :update, :id => @member.to_param, :member => { }
     assert_redirected_to member_path(assigns(:member))
   end
 
-  test "should destroy member" do
-    assert_difference('Member.count', -1) do
-      delete :destroy, :id => @member.to_param
-    end
-
-    assert_redirected_to members_path
+  test "should redirect from update to login if not logged in" do
+    put :update, :id => @member.to_param, :member => { }
+    assert_redirected_to new_user_session_url
   end
 end

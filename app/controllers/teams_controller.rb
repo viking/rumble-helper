@@ -1,4 +1,6 @@
 class TeamsController < ApplicationController
+  before_filter :require_user, :only => [ :edit, :update ]
+
   # GET /teams/1
   # GET /teams/1.xml
   def show
@@ -7,6 +9,7 @@ class TeamsController < ApplicationController
       redirect_to :action => 'new'
       return
     end
+    @members = Member.all
 
     respond_to do |format|
       format.html # show.html.erb
@@ -30,10 +33,10 @@ class TeamsController < ApplicationController
     end
   end
 
-  # GET /teams/1/edit
-  def edit
-    @team = Team.find(params[:id])
-  end
+  ## GET /teams/1/edit
+  #def edit
+    #@team = Team.find(params[:id])
+  #end
 
   # POST /teams
   # POST /teams.xml
@@ -57,32 +60,20 @@ class TeamsController < ApplicationController
     end
   end
 
-  # PUT /teams/1
-  # PUT /teams/1.xml
-  def update
-    @team = Team.first
+  ## PUT /teams/1
+  ## PUT /teams/1.xml
+  #def update
+    #@team = Team.first
 
-    respond_to do |format|
-      if @team.update_attributes(params[:team])
-        flash[:notice] = 'Team was successfully updated.'
-        format.html { redirect_to(team_url) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @team.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /teams/1
-  # DELETE /teams/1.xml
-#  def destroy
-#    @team = Team.find(params[:id])
-#    @team.destroy
-#
-#    respond_to do |format|
-#      format.html { redirect_to(root_url) }
-#      format.xml  { head :ok }
-#    end
-#  end
+    #respond_to do |format|
+      #if @team.update_attributes(params[:team])
+        #flash[:notice] = 'Team was successfully updated.'
+        #format.html { redirect_to(team_url) }
+        #format.xml  { head :ok }
+      #else
+        #format.html { render :action => "edit" }
+        #format.xml  { render :xml => @team.errors, :status => :unprocessable_entity }
+      #end
+    #end
+  #end
 end

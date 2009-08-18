@@ -1,12 +1,22 @@
-<p>
-  <b>Slug:</b>
-  <%=h @team.slug %>
-</p>
+<div class="prefix_3 grid_6 suffix_3">
+  <h1>About The Team</h1>
+  <div class="bubble" style="padding: 1em;">
+    <div class="minititle">Name</div>
+    <p><%=h @team.name %></p>
 
-<p>
-  <b>Name:</b>
-  <%=h @team.name %>
-</p>
+    <div class="minititle">Application</div>
+    <p><%=h @team.app_name %></p>
 
+    <div class="minititle">Description</div>
+    <p><%=h @team.app_description %></p>
 
-<%= link_to 'Edit', edit_team_path(@team) %> |
+    <div class="minititle">Members</div>
+    <ul>
+    <%- @members.each do |member| -%>
+      <li><%= member.nickname %></li>
+    <%- end -%>
+    </ul>
+
+    <%# link_to 'Edit', edit_team_path(@team) %>
+  </div>
+</div>

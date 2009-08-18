@@ -11,9 +11,12 @@ class TeamTest < ActiveSupport::TestCase
     assert !team.valid?
   end
 
-  test "updates name from team data" do
+  test "updates attributes from team data" do
     team = Factory(:team, :slug => 'your-mom')
     assert_equal "Team Shazbot", team.name
+    assert_equal "lend.to", team.app_name
+    assert_equal "A web app to keep track of stuff you've let your friends borrow.", team.app_description
+    assert_equal "http://shazbot.r09.railsrumble.com", team.app_url
   end
 
   test "fails validation on failed fetch" do

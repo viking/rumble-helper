@@ -47,6 +47,9 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
   create_table "teams", :force => true do |t|
     t.string   "slug"
     t.string   "name"
+    t.string   "app_description"
+    t.string   "app_name"
+    t.string   "app_url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

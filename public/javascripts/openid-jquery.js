@@ -66,15 +66,15 @@ var providers_small = {
     label: 'Your Vidoop username',
     url: 'http://{username}.myvidoop.com/'
   },
-  verisign: {
-    name: 'Verisign',
-    label: 'Your Verisign username',
-    url: 'http://{username}.pip.verisignlabs.com/'
-  },
   claimid: {
     name: 'ClaimID',
     label: 'Your ClaimID username',
     url: 'http://claimid.com/{username}'
+  },
+  railsrumble: {
+    name: 'RailsRumble',
+    label: 'Your Rails Rumble username',
+    url: 'http://openid.railsrumble.com/{username}'
   }
 };
 var providers = $.extend({}, providers_large, providers_small);

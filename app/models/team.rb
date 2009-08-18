@@ -20,11 +20,16 @@ class Team < ActiveRecord::Base
 
     def set_attribs
       self.name = @data['team']['name']
+      self.app_name = @data['team']['entry']['name']
+      self.app_description = @data['team']['entry']['description']
+      self.app_url = @data['team']['entry']['direct_url']
     end
 
     def set_members
       @data['team']['members'].each do |hash|
-        Member.create(:nickname => hash['nickname'])
+        Member.create do |member|
+          member.nickname = hash['nickname']
+        end
       end
     end
 end

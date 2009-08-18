@@ -65,6 +65,6 @@
 <script type="text/plain" id="auth_token"><%= @auth_token %></script>
 <% javascript_tag do %>
   $(function() {
-    $.rumblehelper.dashboard.init();
+    $.rumblehelper.dashboard.init(<%= current_user ? 'true' : 'false' %>);
   });
 <% end %>

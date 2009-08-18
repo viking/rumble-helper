@@ -1,9 +1,19 @@
 class Member < ActiveRecord::Base
   attr_accessor :finish_task
+  attr_protected :nickname
+
+  validates_presence_of :nickname
 
   belongs_to :task
+  has_one :user
+
   before_save :remember_task
   after_save :update_task
+
+  named_scope(:unassigned, {
+    :joins => "LEFT JOIN users ON members.id = users.member_id",
+    :conditions => "users.member_id IS NULL"
+  })
 
   private
     def remember_task

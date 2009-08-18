@@ -9,24 +9,27 @@
 
     clear_fix: $('<div class="clear"></div>'),
 
-    init: function() {
+    init: function(logged_in) {
       $.extend(this.options, {
         tasks_url: $('#tasks_url').html(),
         members_url: $('#members_url').html(),
-        auth_token: $('#auth_token').html()
+        auth_token: $('#auth_token').html(),
+        logged_in: logged_in
       });
 
       // this could be DRY'd up a little
       $('.task').rh_setup_tasks();
-      $('.ui-draggable').draggable({revert: true});
-      $('.member').droppable(this.member_droppable_options).each(function() {
-        obj = $(this);
-        if (obj.find('.task').length == 1) {
-          obj.droppable('disable');
-        }
-      });
-      $('#pending_tasks').droppable(this.pending_droppable_options);
-      $('#finished_tasks').droppable(this.finished_droppable_options);
+      if (logged_in) {
+        $('.ui-draggable').draggable({revert: true});
+        $('.member').droppable(this.member_droppable_options).each(function() {
+          obj = $(this);
+          if (obj.find('.task').length == 1) {
+            obj.droppable('disable');
+          }
+        });
+        $('#pending_tasks').droppable(this.pending_droppable_options);
+        $('#finished_tasks').droppable(this.finished_droppable_options);
+      }
     },
 
     member_droppable_options: {
@@ -204,13 +207,17 @@
   };
 
   $.fn.rh_setup_tasks = function() {
+    dashboard = $.rumblehelper.dashboard;
     this.find('.timeago').timeago();
-    this.find('.ui-icon-trash').click($.rumblehelper.dashboard.delete_task);
-    this.find('.ui-icon-wrench').click($.rumblehelper.dashboard.edit_task);
-    this.hover(
-      function() { $(this).find('.icons').fadeIn(100); },
-      function() { $(this).find('.icons').fadeOut(100); }
-    );
+
+    if (dashboard.logged_in) {
+      this.find('.ui-icon-trash').click(dashboard.delete_task);
+      this.find('.ui-icon-wrench').click(dashboard.edit_task);
+      this.hover(
+        function() { $(this).find('.icons').fadeIn(100); },
+        function() { $(this).find('.icons').fadeOut(100); }
+      );
+    }
 
     /*
     this.each(function() {
