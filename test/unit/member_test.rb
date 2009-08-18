@@ -45,6 +45,20 @@ class MemberTest < ActiveSupport::TestCase
     assert_equal 'done', task.reload.status
   end
 
+  test "moves current task from another member" do
+    task = Factory(:task)
+    member_1 = Factory(:member, :task => task)
+    task.update_attribute(:status_changed_at, Time.now - 3600)
+    member_2 = Factory(:member)
+    member_2.update_attributes('move_task_from_member' => member_1.id)
+    task.reload
+
+    assert_nil member_1.reload.task
+    assert_equal task, member_2.task
+    assert_equal 'in_progress', task.status
+    assert (Time.now - task.status_changed_at) < 1
+  end
+
   test ".unassigned should find members that don't have users" do
     members = Array.new(4) { Factory(:member) }
     user = Factory(:user, :member => members.first)

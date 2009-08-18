@@ -17,61 +17,58 @@
         logged_in: logged_in
       });
 
-      // this could be DRY'd up a little
       $('.task').rh_setup_tasks();
       if (logged_in) {
-        $('.ui-draggable').draggable({revert: true});
-        $('.member').droppable(this.member_droppable_options).each(function() {
-          obj = $(this);
-          if (obj.find('.task').length == 1) {
-            obj.droppable('disable');
-          }
-        });
+        $('.member').droppable(this.member_droppable_options);
         $('#pending_tasks').droppable(this.pending_droppable_options);
         $('#finished_tasks').droppable(this.finished_droppable_options);
       }
     },
 
     member_droppable_options: {
-      accept: '.todo, .stalled',
+      accept: '.done, .todo, .stalled, .in_progress',
       drop: function(event, ui) {
-        task_id = ui.draggable.attr('id').substring(5);
-        $.rumblehelper.dashboard.move_draggable(ui, this);
+        result = $.rumblehelper.dashboard.move_draggable(ui, this);
+        if (result.status == 'noop')
+          return;
 
-        // update member
         member_id = $(this).attr('id').substring(7);
-        $.rumblehelper.dashboard.update_member(member_id, task_id);
-
-        $(this).droppable('disable');
+        if (result.source.hasClass('member')) {
+          from_member = result.source.attr('id').substring(7);
+          $.rumblehelper.dashboard.update_member(member_id, undefined, {from_member: from_member});
+        }
+        else {
+          task_id = result.obj.attr('id').substring(5);
+          $.rumblehelper.dashboard.update_member(member_id, task_id);
+        }
       }
     },
 
     pending_droppable_options: {
-      accept: '.in_progress',
+      accept: '.done, .in_progress',
       drop: function(event, ui) {
-        member_id = ui.draggable.parents('.member').attr('id').substring(7);
-        $.rumblehelper.dashboard.move_draggable(ui, this);
+        result = $.rumblehelper.dashboard.move_draggable(ui, this);
+        task_id = result.obj.attr('id').substring(5);
 
-        // update member
-        $.rumblehelper.dashboard.update_member(member_id, '');
+        if (result.source.hasClass('member')) {
+          member_id = source.attr('id').substring(7);
+          $.rumblehelper.dashboard.update_member(member_id, '');
+        }
+        else {
+          $.rumblehelper.dashboard.update_task(task_id, 'stalled');
+        }
       }
     },
 
     finished_droppable_options: {
       accept: '.in_progress, .todo, .stalled',
       drop: function(event, ui) {
-        task_id = ui.draggable.attr('id').substring(5);
+        result = $.rumblehelper.dashboard.move_draggable(ui, this);
+        task_id = result.obj.attr('id').substring(5);
 
-        member = ui.draggable.parents('.member');
-        member_id = null;
-        if (member.length == 1) {
-          member_id = member.attr('id').substring(7);
-        }
-
-        $.rumblehelper.dashboard.move_draggable(ui, this);
-
-        if (member_id) {
-          $.rumblehelper.dashboard.update_member(member_id, '', true);
+        if (result.source.hasClass('member')) {
+          member_id = source.attr('id').substring(7);
+          $.rumblehelper.dashboard.update_member(member_id, '', {finish: true});
         }
         else {
           $.rumblehelper.dashboard.update_task(task_id, 'done');
@@ -83,34 +80,44 @@
       source = ui.draggable.parents('.tasks_bubble');
       destination = $(destination);
 
+      if (source == destination)
+        return {status: 'noop'};
+
       new_obj = this.clone_task(ui.draggable);
+      new_obj.find('.timeago').attr('title', this.current_iso8601_date).timeago();
+
       destination.find('.tasks').prepend(new_obj);
       ui.helper.remove();
       ui.draggable.remove();
+
       this.toggle_task_boxes(source);
       this.toggle_task_boxes(destination);
 
-      if (destination.attr('id') == "finished_tasks") {
-        new_obj.removeClass('ui-draggable');
-        new_obj.find('.status').html('Done');
-      } else {
-        new_obj.draggable({revert: true});
-        if (new_obj.hasClass('todo') || new_obj.hasClass('stalled')) {
-          new_obj.removeClass('todo').removeClass('stalled').addClass('in_progress');
-          new_obj.find('.status').html('In progress');
-        } else if (new_obj.hasClass('in_progress')) {
-          new_obj.removeClass('in_progress').addClass('stalled');
-          new_obj.find('.status').html('Stalled');
-          source.droppable('enable');
-        }
+      if (destination.hasClass('member')) {
+        new_obj.removeClass('todo stalled finished').addClass('in_progress')
+          .find('.status').html('In progress');
+        destination.droppable('disable');
       }
-      new_obj.find('.timeago').attr('title', this.current_iso8601_date).timeago();
+      else if (destination.attr('id') == "pending_tasks") {
+        new_obj.removeClass('todo finished in_progress').addClass('stalled')
+          .find('.status').html('Stalled');
+      }
+      else if (destination.attr('id') == "finished_tasks") {
+        new_obj.removeClass('todo stalled in_progress').addClass('done')
+          .find('.status').html('Done');
+      }
+
+      if (source.hasClass('member'))
+        source.droppable('enable');
+
+      return {source: source, obj: new_obj, status: 'ok'};
     },
 
     clone_task: function(task) {
-      new_obj = task.clone().rh_setup_tasks();
-      new_obj.attr('style', '').attr('title', this.current_iso8601_date)
-        .find('.icons').hide();
+      new_obj = task.clone().rh_setup_tasks()
+        .attr('style', '').attr('title', this.current_iso8601_date)
+        .removeClass('ui-draggable-dragging');
+      new_obj.find('.icons').hide();
       return new_obj;
     },
 
@@ -125,14 +132,21 @@
       }
     },
 
-    update_member: function(member_id, task_id, finish_task) {
+    update_member: function(member_id, task_id, options) {
+      if (!options)
+        options = {};
+
       data = {
-        'member[task_id]': task_id,
         'authenticity_token': this.options.auth_token,
         '_method': 'put'
       };
-      if (finish_task) {
+      if (task_id != undefined)
+        data['member[task_id]'] = task_id;
+
+      if (options.finish) {
         data['member[finish_task]'] = true;
+      } else if (options.from_member) {
+        data['member[move_task_from_member]'] = options.from_member;
       }
       $.ajax({
         type: 'POST', data: data,
@@ -211,25 +225,31 @@
     this.find('.timeago').timeago();
 
     if (dashboard.options.logged_in) {
+      this.draggable({revert: true});
       this.find('.ui-icon-trash').click(dashboard.delete_task);
       this.find('.ui-icon-wrench').click(dashboard.edit_task);
-      this.hover(
-        function() { $(this).find('.icons').fadeIn(100); },
-        function() { $(this).find('.icons').fadeOut(100); }
-      );
     }
+    this.hover(
+      function() { $(this).find('.icons').fadeIn(100); },
+      function() { $(this).find('.icons').fadeOut(100); }
+    );
+    this.find('.icons').hover(
+      function() { $(this).parent().parent().draggable('disable'); },
+      function() { $(this).parent().parent().draggable('enable'); }
+    );
 
     this.each(function() {
-      description = $(this).find('.description');
+      task_id = this.id;
+      description = $('#'+task_id+"_description");
       if (description.length > 0) {
-        $(this).find('.ui-icon-info').hover(
-          function(e) {
-            description.fadeIn(100);
-          },
-          function(e) {
-            description.fadeOut(100);
-          }
-        );
+        $(this).find('.ui-icon-info').data('description', description.html())
+          .hover(
+            function(e) {
+              $('#description_bubble').html($(this).data('description'))
+                .css({top: e.pageY, left: e.pageX + 25}).fadeIn(100);
+            },
+            function(e) { $('#description_bubble').fadeOut(100); }
+          );
       }
     });
     return this;

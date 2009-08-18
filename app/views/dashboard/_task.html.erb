@@ -1,19 +1,22 @@
-<div id="task_<%= task.id %>" class="task <%= task.priority.downcase %> <%= task.status %> <%= 'ui-draggable ' if current_user && task.status != 'done' %>ui-widget ui-widget-content ui-corner-all">
-  <div class="task_name ui-widget-header ui-corner-all ui-helper-clearfix">
+<%- task_id = "task_#{task.id}" -%>
+<div id="<%= task_id %>" class="task <%= task.priority.downcase %> <%= task.status %> <%= 'ui-draggable ' if current_user %>ui-widget ui-widget-content ui-corner-all">
+  <div id="<%= task_id %>_name" class="task_name ui-widget-header ui-corner-all ui-helper-clearfix">
     <span><%=h task.name %></span>
-    <div class="icons ui-corner-all">
+    <div id="<%= task_id %>_icons" class="icons ui-corner-all">
       <%- if !task.description.blank? -%>
       <%= ui_icon('info') %>
       <%- end -%>
+      <%- if current_user -%>
       <%= ui_icon('wrench') %>
       <%= ui_icon('trash') %>
+      <%- end -%>
     </div>
   </div>
-  <div class="task_content ui-widget-content">
+  <div id="<%= task_id %>_content" class="task_content ui-widget-content">
     <span class="status"><%= task.status.humanize %></span><br/>
     <div class="timeago" title="<%= task.status_changed_at.iso8601 %>"><%= task.status_changed_at %></div>
   </div>
   <%- if !task.description.blank? -%>
-  <div class="description ui-corner-all"><%=h task.description %></div>
+  <script id="<%= task_id %>_description" type="text/plain"><%=h task.description %></script>
   <%- end -%>
 </div>

@@ -10,17 +10,18 @@ class Task < ActiveRecord::Base
   end
 
   aasm_event :activate do
-    transitions :to => :in_progress, :from => [:todo, :stalled]
+    transitions :to => :in_progress, :from => [:todo, :stalled, :done]
   end
   aasm_event :stall do
-    transitions :to => :stalled, :from => [:in_progress]
+    transitions :to => :stalled, :from => [:in_progress, :done]
   end
   aasm_event :finish do
-    transitions :to => :done, :from => [:in_progress]
+    transitions :to => :done, :from => [:in_progress, :stalled, :todo]
   end
 
   has_many :members, :dependent => :nullify
 
+  validates_presence_of :name
   validates_inclusion_of :priority, :in => PRIORITIES
   validates_inclusion_of :status, :in => STATUSES
 

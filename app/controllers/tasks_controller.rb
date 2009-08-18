@@ -54,10 +54,16 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.save
         flash[:notice] = 'Task was successfully created.'
-        format.html { redirect_back_or_default tasks_url }
+        format.html do
+          if params[:commit] == "Save and continue"
+            redirect_to new_task_url
+          else
+            redirect_back_or_default tasks_url
+          end
+        end
         format.xml  { render :xml => @task, :status => :created, :location => @task }
       else
-        format.html { render :action => "new" }
+        format.html { render :action => "form" }
         format.xml  { render :xml => @task.errors, :status => :unprocessable_entity }
       end
     end
@@ -71,10 +77,10 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update_attributes(params[:task])
         flash[:notice] = 'Task was successfully updated.'
-        format.html { redirect_back_or_default task_url(@task) }
+        format.html { redirect_back_or_default tasks_url }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
+        format.html { render :action => "form" }
         format.xml  { render :xml => @task.errors, :status => :unprocessable_entity }
       end
     end

@@ -4,6 +4,7 @@ Factory.define :user do |f|
 end
 
 Factory.define :task do |t|
+  t.name { %w{Huge Large Medium Small}.random }
   t.priority { %w{Critical High Medium Low}.random }
   t.description { Forgery(:lorem_ipsum).sentence }
 end

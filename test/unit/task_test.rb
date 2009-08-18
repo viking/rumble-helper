@@ -21,6 +21,11 @@ class TaskTest < ActiveSupport::TestCase
     assert !task.valid?
   end
 
+  test "requires name" do
+    task = Factory.build(:task, :name => nil)
+    assert !task.valid?
+  end
+
   test "has_many members" do
     task = Factory(:task)
     members = Factory(:member, :task => task)
@@ -39,14 +44,38 @@ class TaskTest < ActiveSupport::TestCase
     assert_equal 'in_progress', task.status
   end
 
+  test "activation from done" do
+    task = Factory(:task, :status => 'done')
+    task.activate!
+    assert_equal 'in_progress', task.status
+  end
+
   test "deactivation from in_progress" do
     task = Factory(:task, :status => 'in_progress')
     task.stall!
     assert_equal 'stalled', task.status
   end
 
+  test "deactivation from done" do
+    task = Factory(:task, :status => 'done')
+    task.stall!
+    assert_equal 'stalled', task.status
+  end
+
   test "finishing task from in_progress" do
     task = Factory(:task, :status => 'in_progress')
+    task.finish!
+    assert_equal 'done', task.status
+  end
+
+  test "finishing task from todo" do
+    task = Factory(:task, :status => 'todo')
+    task.finish!
+    assert_equal 'done', task.status
+  end
+
+  test "finishing task from stalled" do
+    task = Factory(:task, :status => 'stalled')
     task.finish!
     assert_equal 'done', task.status
   end

@@ -38,6 +38,15 @@ class TasksControllerTest < ActionController::TestCase
     assert_redirected_to tasks_path
   end
 
+  test "should redirect after creating to new" do
+    UserSession.create(Factory(:user))
+    assert_difference('Task.count') do
+      post :create, :commit => "Save and continue", :task => Factory.attributes_for(:task)
+    end
+
+    assert_redirected_to new_task_url
+  end
+
   test "should redirect from create to login if not logged in" do
     assert_no_difference('Task.count') do
       post :create, :task => Factory.attributes_for(:task)
@@ -70,7 +79,7 @@ class TasksControllerTest < ActionController::TestCase
   test "should update task" do
     UserSession.create(Factory(:user))
     put :update, :id => @task.to_param, :task => { }
-    assert_redirected_to task_path(assigns(:task))
+    assert_redirected_to tasks_path
   end
 
   test "should redirect from update to login if not logged in" do
