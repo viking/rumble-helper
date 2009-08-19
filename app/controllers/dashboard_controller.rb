@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
 
       @pending_tasks = Task.pending
       @finished_tasks = Task.finished
-      @members = Member.all
+      @members = Member.all(:order => 'id')
       @num_members = @members.length
       @auth_token = form_authenticity_token
 
