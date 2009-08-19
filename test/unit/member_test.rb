@@ -59,6 +59,16 @@ class MemberTest < ActiveSupport::TestCase
     assert (Time.now - task.status_changed_at) < 1
   end
 
+  test "correctly handles invalid task_id when switching to another task" do
+    task_1 = Factory(:task)
+    task_2 = Factory(:task)
+    member = Factory(:member, :task => task_1)
+    task_1.destroy
+    assert_nothing_raised do
+      member.update_attribute(:task_id, task_2.id)
+    end
+  end
+
   test ".unassigned should find members that don't have users" do
     members = Array.new(4) { Factory(:member) }
     user = Factory(:user, :member => members.first)

@@ -72,12 +72,15 @@ class TasksController < ApplicationController
   # PUT /tasks/1
   # PUT /tasks/1.xml
   def update
-    @task = Task.find(params[:id])
+    @task = Task.find_by_id(params[:id])
 
+    return head(:not_found) if @task.nil?
     respond_to do |format|
       if @task.update_attributes(params[:task])
-        flash[:notice] = 'Task was successfully updated.'
-        format.html { redirect_back_or_default tasks_url }
+        format.html do
+          flash[:notice] = 'Task was successfully updated.'
+          redirect_back_or_default tasks_url
+        end
         format.xml  { head :ok }
       else
         format.html { render :action => "form" }
@@ -89,9 +92,10 @@ class TasksController < ApplicationController
   # DELETE /tasks/1
   # DELETE /tasks/1.xml
   def destroy
-    @task = Task.find(params[:id])
-    @task.destroy
+    @task = Task.find_by_id(params[:id])
+    return head(:not_found) if @task.nil?
 
+    @task.destroy
     respond_to do |format|
       format.html { redirect_back_or_default tasks_url }
       format.xml  { head :ok }

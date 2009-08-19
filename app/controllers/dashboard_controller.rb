@@ -12,6 +12,10 @@ class DashboardController < ApplicationController
       @members = Member.all
       @num_members = @members.count
       @auth_token = form_authenticity_token
+
+      if request.xhr?
+        render :partial => 'tasks'
+      end
     end
   end
 end

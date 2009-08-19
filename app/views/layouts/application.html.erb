@@ -22,7 +22,7 @@
   </div>
   <div id="nav">
     <div class="container_12">
-      <div class="grid_9">
+      <div class="grid_6">
         <%- if (user_count = User.count) > 0 -%>
         <ul>
           <li><%= link_to 'Dashboard', root_url %></li>
@@ -31,7 +31,11 @@
         </ul>
         <%- end -%>
       </div>
-      <div class="grid_3 ralign">
+      <div class="grid_1">
+        <%= image_tag 'ajax-loader.gif', :id => 'spinner' %>
+        &nbsp;
+      </div>
+      <div class="grid_5 ralign">
         <%- if user_count > 0 -%>
         <% if current_user %>
         Logged in as: <%= current_user.nickname %>
@@ -58,7 +62,9 @@
     <%= flash[:notice] %>
   </div>
   <% javascript_tag do %>
-    $('#flash').fadeOut(5000);
+    $('#flash').fadeIn(500, function() {
+      setTimeout("$('#flash').fadeOut(500);", 3000);
+    });
   <% end %>
   <%- end -%>
 </body>

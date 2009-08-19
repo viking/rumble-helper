@@ -34,6 +34,12 @@ class MembersControllerTest < ActionController::TestCase
     assert_redirected_to member_path(assigns(:member))
   end
 
+  test "should not set flash[:notice] for update for xml" do
+    UserSession.create(Factory(:user))
+    put :update, :format => 'xml', :id => @member.to_param, :member => { }
+    assert_nil flash[:notice]
+  end
+
   test "should redirect from update to login if not logged in" do
     put :update, :id => @member.to_param, :member => { }
     assert_redirected_to new_user_session_url

@@ -37,4 +37,9 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
     assert_equal root_path, session[:return_to]
   end
+
+  test "should render partial for index when ajax" do
+    xhr :get, :index
+    assert_template 'dashboard/_tasks'
+  end
 end

@@ -1,0 +1,63 @@
+<div class="grid_12">
+  <h2>Who's working on what?</h2>
+</div>
+<div class="clear"></div>
+
+<% @members.each_with_index do |member, i| %>
+<div class="grid_<%= 12 / @num_members %>">
+  <div id="member_<%= member.id %>" class="tasks_bubble member">
+    <div class="nickname"><%= member.nickname %></div>
+    <div class="no_tasks<%= ' hidden' if member.task %>">
+      Ain't doin' nothin'!
+    </div>
+    <div class="tasks<%= ' hidden' if member.task.nil? %>">
+      <% if member.task %>
+        <%= render :partial => 'task', :locals => { :task => member.task } %>
+      <% end %>
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+<% end %>
+<div class="clear"></div>
+<br/>
+
+<div class="grid_12">
+  <h2>What's left to do?</h2>
+  <div id="pending_tasks" class="tasks_bubble">
+    <div class="no_tasks<%= ' hidden' unless @pending_tasks.empty? %>">
+      You did everything?  Yeah right.
+      <%- if current_user -%>
+      Better <%= link_to 'add another task', new_task_url %>.
+      <%- end -%>
+    </div>
+    <div class="tasks<%= ' hidden' if @pending_tasks.empty? %>">
+      <% if !@pending_tasks.empty? %>
+        <%= render :partial => 'task', :collection => @pending_tasks %>
+      <% end %>
+      <div class="clear"></div>
+      <%- if current_user -%>
+      <div class="padded">
+        <%= link_to 'Add another task', new_task_url %>
+      </div>
+      <%- end -%>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+<br/>
+
+<div class="grid_12">
+  <h2>What's finished?</h2>
+  <div id="finished_tasks" class="tasks_bubble">
+    <div class="no_tasks<%= ' hidden' unless @finished_tasks.empty? %>">
+      You haven't finished squat!  Better get to it!
+    </div>
+    <div class="tasks<%= ' hidden' if @finished_tasks.empty? %>">
+      <% if !@finished_tasks.empty? %>
+        <%= render :partial => 'task', :collection => @finished_tasks %>
+      <% end %>
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>

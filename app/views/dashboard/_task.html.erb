@@ -1,5 +1,5 @@
 <%- task_id = "task_#{task.id}" -%>
-<div id="<%= task_id %>" class="task <%= task.priority.downcase %> <%= task.status %> <%= 'ui-draggable ' if current_user %>ui-widget ui-widget-content ui-corner-all">
+<div id="<%= task_id %>" class="task <%= task.priority.downcase %> <%= task.status %> ui-widget ui-widget-content ui-corner-all">
   <div id="<%= task_id %>_name" class="task_name ui-widget-header ui-corner-all ui-helper-clearfix">
     <span><%=h task.name %></span>
     <div id="<%= task_id %>_icons" class="icons ui-corner-all">

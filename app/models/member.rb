@@ -36,16 +36,17 @@ class Member < ActiveRecord::Base
         current_task.activate!
       end
       if @previous_task_id && @previous_task_id != :unchanged
-        previous_task = Task.find(@previous_task_id)
-        if @move_task_to_member
-          previous_task.update_attribute('status_changed_at', Time.now)
-          @move_task_to_member = nil
-        elsif @finish_task
-          previous_task.finish!
-          @finish_task = false
-        else
-          previous_task.stall!
+        previous_task = Task.find_by_id(@previous_task_id)
+        if previous_task
+          if @move_task_to_member
+            previous_task.update_attribute('status_changed_at', Time.now)
+          elsif @finish_task
+            previous_task.finish!
+          else
+            previous_task.stall!
+          end
         end
+        @move_task_to_member = @finish_task = nil
       end
     end
 end

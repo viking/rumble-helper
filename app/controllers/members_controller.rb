@@ -34,8 +34,10 @@ class MembersController < ApplicationController
 
     respond_to do |format|
       if @member.update_attributes(params[:member])
-        flash[:notice] = 'Member was successfully updated.'
-        format.html { redirect_to(@member) }
+        format.html do
+          redirect_to(@member)
+          flash[:notice] = 'Member was successfully updated.'
+        end
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

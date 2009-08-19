@@ -82,6 +82,18 @@ class TasksControllerTest < ActionController::TestCase
     assert_redirected_to tasks_path
   end
 
+  test "should not set flash[:notice] for update for xml" do
+    UserSession.create(Factory(:user))
+    put :update, :format => 'xml', :id => @task.to_param, :task => { }
+    assert_nil flash[:notice]
+  end
+
+  test "should return 404 if updating non-existant task" do
+    UserSession.create(Factory(:user))
+    put :update, :id => '8675309', :task => { }
+    assert_response 404
+  end
+
   test "should redirect from update to login if not logged in" do
     put :update, :id => @task.to_param, :task => { }
     assert_redirected_to new_user_session_url
@@ -96,10 +108,17 @@ class TasksControllerTest < ActionController::TestCase
     assert_redirected_to tasks_path
   end
 
+  test "should return 404 if destroying non-existant task" do
+    UserSession.create(Factory(:user))
+    delete :destroy, :id => '8675309'
+    assert_response 404
+  end
+
   test "should redirect from destroy to login if not logged in" do
     assert_no_difference('Task.count') do
       delete :destroy, :id => @task.to_param
     end
     assert_redirected_to new_user_session_url
   end
+
 end

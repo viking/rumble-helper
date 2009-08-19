@@ -7,18 +7,22 @@
   $.rumblehelper.dashboard = {
     options: { },
 
-    clear_fix: $('<div class="clear"></div>'),
-
     init: function(logged_in) {
       $.extend(this.options, {
         tasks_url: $('#tasks_url').html(),
         members_url: $('#members_url').html(),
+        dashboard_url: $('#dashboard_url').html(),
         auth_token: $('#auth_token').html(),
         logged_in: logged_in
       });
 
+      this.options.timer_id = setInterval(this.refresh_dashboard, 10000);
+      this.setup();
+    },
+
+    setup: function() {
       $('.task').rh_setup_tasks();
-      if (logged_in) {
+      if (this.options.logged_in) {
         $('.member').each(function() {
           obj = $(this);
           obj.droppable($.rumblehelper.dashboard.member_droppable_options);
@@ -223,6 +227,25 @@
         second = '0' + second;
 
       return year+'-'+month+'-'+day+'T'+hour+':'+minute+':'+second+'Z';
+    },
+
+    refresh_dashboard: function() {
+      if ($('#dashboard').find('.ui-draggable-dragging').length > 0)
+        return;
+
+      $('.ui-draggable').draggable('disable');
+      $('.task .icons').remove();
+      $('#spinner').show();
+      $.ajax({
+        url: $.rumblehelper.dashboard.options.dashboard_url,
+        type: 'GET',
+        dataType: 'html',
+        success: function(data) {
+          $('#dashboard').html(data);
+          $.rumblehelper.dashboard.setup();
+          $('#spinner').hide();
+        }
+      });
     }
   };
 
