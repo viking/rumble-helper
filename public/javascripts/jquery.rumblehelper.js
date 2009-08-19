@@ -101,10 +101,7 @@
 
       destination.find('.tasks').prepend(new_obj);
       //ui.helper.remove();
-      ui.draggable.hide();
-
-      this.toggle_task_boxes(source);
-      this.toggle_task_boxes(destination);
+      ui.draggable.hide().removeClass('task');
 
       if (destination.hasClass('member')) {
         new_obj.removeClass('todo stalled finished').addClass('in_progress')
@@ -122,6 +119,9 @@
 
       if (source.hasClass('member'))
         source.droppable('enable');
+
+      this.toggle_task_boxes(source);
+      this.toggle_task_boxes(destination);
 
       return {source: source, obj: new_obj, status: 'ok'};
     },
