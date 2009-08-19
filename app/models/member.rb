@@ -18,8 +18,7 @@ class Member < ActiveRecord::Base
 
   private
     def set_invitation_code
-      # yoinked from Authlogic::Random
-      self.invitation_code = SecureRandom.base64(10).tr('+/=', '-_ ').strip.delete("\n")
+      self.invitation_code = Authlogic::Random.friendly_token
     end
 
     def remember_task
