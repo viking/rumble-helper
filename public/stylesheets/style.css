@@ -125,6 +125,7 @@ a:hover { color: #fff; background-color:#000; }
 
 #main {
   margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 #description_bubble {
@@ -136,14 +137,14 @@ a:hover { color: #fff; background-color:#000; }
   border: 2px solid #222;
   right: -16em;
   top: 0;
-  z-index: 200;
+  z-index: 2000;
 }
 
 .task {
   float: left;
   padding: 0.2em;
   width: 13em;
-  margin: 0.2em;
+  margin: 0.1em;
   position: relative;
 }
 .task_name {
@@ -173,6 +174,7 @@ a:hover { color: #fff; background-color:#000; }
 }
 .task_content .status {
   font-weight: bold;
+  background: none;
 }
 
 .critical .task_name {
@@ -219,6 +221,8 @@ a:hover { color: #fff; background-color:#000; }
   -webkit-border-radius: 10px;
   padding: 0;
   min-height: 12em;
+  height: auto !important;
+  height: 12em;
 }
 
 .member .nickname {
@@ -250,11 +254,12 @@ a:hover { color: #fff; background-color:#000; }
 
 .ui-draggable {
   cursor: move;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .ui-state-disabled {
   opacity: 1;
+  filter:Alpha(Opacity=100);
 }
 
 table.list {

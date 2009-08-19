@@ -25,8 +25,12 @@ class Task < ActiveRecord::Base
   validates_inclusion_of :priority, :in => PRIORITIES
   validates_inclusion_of :status, :in => STATUSES
 
-  named_scope :finished, :conditions => { :status => 'done' }
-  named_scope :pending, :conditions => "status IN ('todo', 'stalled')"
+  named_scope(:finished, {
+    :conditions => { :status => 'done' }, :order => "updated_at DESC"
+  })
+  named_scope(:pending, {
+    :conditions => "status IN ('todo', 'stalled')", :order => "updated_at DESC"
+  })
 
   before_save :set_status_changed_at
 

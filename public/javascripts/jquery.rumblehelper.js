@@ -12,7 +12,7 @@
         tasks_url: $('#tasks_url').html(),
         members_url: $('#members_url').html(),
         dashboard_url: $('#dashboard_url').html(),
-        auth_token: $('#auth_token').html(),
+        auth_token: $('#auth_token').html().replace('\r', '').replace('\n', ''),
         logged_in: logged_in
       });
 
@@ -100,8 +100,8 @@
       new_obj.find('.timeago').attr('title', this.current_iso8601_date).timeago();
 
       destination.find('.tasks').prepend(new_obj);
-      ui.helper.remove();
-      ui.draggable.remove();
+      //ui.helper.remove();
+      ui.draggable.hide();
 
       this.toggle_task_boxes(source);
       this.toggle_task_boxes(destination);
@@ -189,23 +189,22 @@
     delete_task: function() {
       confirmation = confirm('Do you really want to delete this task?');
       if (confirmation) {
-        dashboard = $.rumblehelper.dashboard;
         task = $(this).parents('.task');
         task_id = task.attr('id').substring(5);
         $.ajax({
           type: 'POST',
           data: {
-            'authenticity_token': dashboard.options.auth_token,
+            'authenticity_token': $.rumblehelper.dashboard.options.auth_token,
             '_method': 'delete'
           },
-          url: dashboard.options.tasks_url+'/'+task_id+'.xml',
+          url: $.rumblehelper.dashboard.options.tasks_url+'/'+task_id+'.xml',
           complete: function() { }
         });
         task.fadeOut('fast', function() {
           obj = $(this);
           source = obj.parents('.tasks_bubble');
           obj.remove();
-          dashboard.toggle_task_boxes(source);
+          $.rumblehelper.dashboard.toggle_task_boxes(source);
         });
       }
     },
@@ -253,13 +252,12 @@
   };
 
   $.fn.rh_setup_tasks = function() {
-    dashboard = $.rumblehelper.dashboard;
     this.find('.timeago').timeago();
 
-    if (dashboard.options.logged_in) {
-      this.draggable({revert: true});
-      this.find('.ui-icon-trash').click(dashboard.delete_task);
-      this.find('.ui-icon-wrench').click(dashboard.edit_task);
+    if ($.rumblehelper.dashboard.options.logged_in) {
+      this.draggable({revert: 'invalid'});
+      this.find('.ui-icon-trash').click($.rumblehelper.dashboard.delete_task);
+      this.find('.ui-icon-wrench').click($.rumblehelper.dashboard.edit_task);
     }
     this.hover(
       function() { $(this).find('.icons').fadeIn(100); },

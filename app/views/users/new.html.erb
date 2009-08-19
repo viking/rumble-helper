@@ -18,17 +18,7 @@
   <br/>
   <%- end -%>
 
-  <div id="openid_choice">
-    <label>What's your OpenID provider?</label>
-    <div id="openid_btns"></div>
-  </div>
-  <div class="clear"></div>
-
-  <div id="openid_input_area">
-    <div id="openid_label"></div>
-    <input id="openid_username" type="text" />
-    <%= f.hidden_field :openid_identifier, :value => "http://", :id => "openid_identifier" %>
-  </div>
+  <%= render :partial => 'openid', :locals => { :f => f } %>
 
   <%= f.submit "Register" %>
 <% end %>
