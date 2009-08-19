@@ -10,7 +10,7 @@ class DashboardController < ApplicationController
       @pending_tasks = Task.pending
       @finished_tasks = Task.finished
       @members = Member.all
-      @num_members = @members.count
+      @num_members = @members.length
       @auth_token = form_authenticity_token
 
       if request.xhr?
