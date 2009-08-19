@@ -7,6 +7,7 @@ class Member < ActiveRecord::Base
   belongs_to :task
   has_one :user
 
+  before_create :set_invitation_code
   before_save :remember_task
   after_save :update_task
 
@@ -16,6 +17,11 @@ class Member < ActiveRecord::Base
   })
 
   private
+    def set_invitation_code
+      # yoinked from Authlogic::Random
+      self.invitation_code = SecureRandom.base64(10).tr('+/=', '-_ ').strip.delete("\n")
+    end
+
     def remember_task
       if @move_task_from_member
         other = Member.find(@move_task_from_member)

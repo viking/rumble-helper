@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
   create_table "members", :force => true do |t|
     t.string   "nickname"
     t.integer  "task_id"
+    t.string   "invitation_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.string   "last_login_ip"
     t.string   "perishable_token",   :default => "", :null => false
     t.string   "openid_identifier"
+    t.string   "invitation_code"
     t.integer  "member_id"
     t.datetime "created_at"
     t.datetime "updated_at"

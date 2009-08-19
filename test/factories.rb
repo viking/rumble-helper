@@ -1,6 +1,8 @@
-Factory.define :user do |f|
-  f.nickname { Forgery(:internet).user_name }
-  f.email { |u| u.nickname + '@' + Forgery(:internet).domain_name }
+Factory.define :user do |u|
+  u.nickname { Forgery(:internet).user_name }
+  u.email { |user| Forgery(:internet).email_address }
+  u.association :member
+  u.invitation_code { |user| user.member.invitation_code }
 end
 
 Factory.define :task do |t|

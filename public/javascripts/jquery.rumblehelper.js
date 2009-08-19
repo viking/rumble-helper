@@ -16,7 +16,10 @@
         logged_in: logged_in
       });
 
-      this.options.timer_id = setInterval(this.refresh_dashboard, 10000);
+      this.options.timer_id = setInterval(
+        this.refresh_dashboard,
+        (logged_in ? 10000 : 60000)
+      );
       this.setup();
     },
 

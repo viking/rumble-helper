@@ -11,6 +11,11 @@ class MemberTest < ActiveSupport::TestCase
     assert !member.valid?
   end
 
+  test "generates invitation code on create" do
+    member = Factory(:member)
+    assert_not_nil member.invitation_code
+  end
+
   test "belongs_to task" do
     task = Factory(:task)
     member = Factory(:member, :task => task)

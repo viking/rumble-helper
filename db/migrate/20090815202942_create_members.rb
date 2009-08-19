@@ -3,6 +3,7 @@ class CreateMembers < ActiveRecord::Migration
     create_table :members do |t|
       t.string :nickname
       t.integer :task_id
+      t.string :invitation_code
 
       t.timestamps
     end

@@ -7,13 +7,19 @@
 
 <% form_for @user, :url => account_url, :html => {:id => "openid_form"} do |f| %>
   <%= f.error_messages %>
-  <p>
-    <%= f.label :member_id, "Which one are you?" %><br/>
-    <%= f.collection_select :member_id, @members, :id, :nickname %>
-  </p>
+
+  <%- if @num_users == 0 -%>
+  <div><%= f.label :member_id, "Which team member are you?" %></div>
+  <div><%= f.collection_select :member_id, @members, :id, :nickname %></div>
+  <br/>
+  <%- else -%>
+  <div><%= f.label :invitation_code %></div>
+  <div><%= f.text_field :invitation_code %></div>
+  <br/>
+  <%- end -%>
 
   <div id="openid_choice">
-    What's your OpenID provider?
+    <label>What's your OpenID provider?</label>
     <div id="openid_btns"></div>
   </div>
   <div class="clear"></div>

@@ -1,16 +1,14 @@
 class MembersController < ApplicationController
-  before_filter :require_user, :only => [ :update ]
+  before_filter :require_user
 
   # GET /members
   # GET /members.xml
   def index
+    @members = Member.all
+
     respond_to do |format|
-      format.html do
-        redirect_to root_url
-      end
-      format.xml do
-        render :xml => Member.all
-      end
+      format.html # index.html.erb
+      format.xml  { render :xml => @members }
     end
   end
 

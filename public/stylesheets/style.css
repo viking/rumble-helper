@@ -199,6 +199,20 @@ a:hover { color: #fff; background-color:#000; }
   padding: 0.7em;
 }
 
+.long_notice {
+  background-color: #008000;
+  color: white;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  padding: 0.7em;
+  margin-bottom: 2em;
+  text-align: center;
+}
+.long_notice a,
+.long_notice a:visited {
+  color: white;
+}
+
 .tasks_bubble {
   background-color: white;
   -moz-border-radius: 10px;
@@ -282,4 +296,8 @@ table.list tr.alt td {
 
 label {
   font-weight: bold;
+}
+
+.strikethrough {
+  text-decoration: line-through;
 }

@@ -12,13 +12,20 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal Member.all, assigns(:members)
   end
 
-  test "should get only non-assigned members for new" do
+  test "should display member_id instead of invitation_code if first user" do
     @controller.instance_variable_set("@current_user", nil)   # lame.
-
-    members = Member.all
-    Factory(:user, :member => members.first)
+    User.delete_all
     get :new
-    assert_equal members[1..-1], assigns(:members)
+    assert_select 'input[name=?]', "user[invitation_code]", false
+    assert_select 'select[name=?]', "user[member_id]"
+  end
+
+  test "should display invitation_code instead of member_id if not first user" do
+    @controller.instance_variable_set("@current_user", nil)   # lame.
+    Factory(:user, :member => Member.first)
+    get :new
+    assert_select 'input[name=?]', "user[invitation_code]"
+    assert_select 'select[name=?]', "user[member_id]", false
   end
 
   test "should redirect from new to root when all members are accounted for" do
@@ -38,13 +45,14 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
-  test "should redirect from create to tasks_url if this is the first user" do
-    Task.delete_all
+  test "should redirect from create to members_url if this is the first user" do
+    User.delete_all
     user = User.new
     user.expects(:save).yields(true)
     User.expects(:new).returns(user)
+    User.expects(:count).returns(1)
     post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
-    assert_redirected_to tasks_url
+    assert_redirected_to members_url
   end
 
   test "should redirect from create to root when all members are accounted for" do

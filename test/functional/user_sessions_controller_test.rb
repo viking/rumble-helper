@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class UserSessionsControllerTest < ActionController::TestCase
+  def setup
+    activate_authlogic
+  end
+
   test "should get new" do
     get :new
     assert_response :success
@@ -16,8 +20,9 @@ class UserSessionsControllerTest < ActionController::TestCase
   end
 
   test "should destroy user session" do
+    UserSession.create(Factory(:user))
     delete :destroy
     assert_nil UserSession.find
-    assert_redirected_to new_user_session_path
+    assert_redirected_to root_url
   end
 end
