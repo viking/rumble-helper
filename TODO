@@ -1,3 +1,1 @@
 - change setup phase to use rumble api key (when openid identifiers are available)
-- freeze things for deployment
-- update README with usage instructions

@@ -11,11 +11,11 @@ Easiest:
   RAILS_ENV="production" rake db:migrate
   script/server -e production
 
-By default, it uses a sqlite3 database, so you'll need the _sqlite3-ruby_ gem.  You can set up your own database if you wish, in the normal way.
+By default, it uses a sqlite3 database, so you'll need the +sqlite3-ruby+ gem.  You can set up your own database if you wish, in the normal way.
 
 == Setup / Usage
 
-The first time you connect, it will ask you for your Rails Rumble team slug.  Your slug is what appears in the URL of your team profile, after _http://r09.railsrumble.com/teams/_.
+The first time you connect, it will ask you for your Rails Rumble team slug.  Your slug is what appears in the URL of your team profile, after +http://r09.railsrumble.com/teams/+.
 
 Once you've done that, rumble-helper will fetch your team info from the Rumble server. Then it will ask you which team member you are, and what your OpenID provider is.  Note that this doesn't have to be the same provider that you used for signing up for the Rumble site, although it makes sense to use the same one. :)
 
