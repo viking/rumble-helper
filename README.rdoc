@@ -1,0 +1,28 @@
+= Rumble Helper
+
+Rumble helper is a helper application for a Rails Rumble team.  It tracks what tasks need to be done, who is doing what, and what's finished, so at a glance you can easily figure out what's going on without yelling, "Dude, has anyone done this yet?"
+
+== Installation
+
+Easiest:
+
+  git clone git://github.com/viking/rumble-helper.git
+  cd rumble-helper
+  RAILS_ENV="production" rake db:migrate
+  script/server -e production
+
+By default, it uses a sqlite3 database, so you'll need the _sqlite3-ruby_ gem.  You can set up your own database if you wish, in the normal way.
+
+== Setup / Usage
+
+The first time you connect, it will ask you for your Rails Rumble team slug.  Your slug is what appears in the URL of your team profile, after _http://r09.railsrumble.com/teams/_.
+
+Once you've done that, rumble-helper will fetch your team info from the Rumble server. Then it will ask you which team member you are, and what your OpenID provider is.  Note that this doesn't have to be the same provider that you used for signing up for the Rumble site, although it makes sense to use the same one. :)
+
+Next, you can invite your team members if you wish.  Each member has an invitation code which they can use to register themselves.  Just give them a holler with their code.
+
+Then, you can tell rumble-helper all about what the hell needs to be done.  Creating tasks is pretty straightforward.
+
+After all that's done, go check out the dashboard.  Here's where all the action happens.  When you're ready to work on a task, drag it to your bubble.  You can also assign tasks to your team members.  If you get tired of working on it, drag it back to the list of pending tasks, and so on.
+
+If you want, you can make the app public to let people know what your team is up to.  They can view, but not change.
