@@ -27,10 +27,14 @@ class User < ActiveRecord::Base
     end
 
     def validate
+      do_fetch = self.new_record?
+
       if self.user_type && self.user_type != 'participant'
+        do_fetch = false
         self.errors.add_to_base('You must be a participant to sign up.')
       end
-      if self.new_record?
+
+      if do_fetch
         if self.api_key.blank?
           self.errors.add(:api_key, 'is required')
         elsif self.api_key !~ /^[a-fA-F0-9]+$/

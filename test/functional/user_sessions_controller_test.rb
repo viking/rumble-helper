@@ -21,6 +21,11 @@ class UserSessionsControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
+  test "should render new from create if bad openid" do
+    post :create, :user_session => { :openid_identifier => "foo" }
+    assert_template 'user_sessions/new'
+  end
+
   test "should destroy user session" do
     UserSession.create(Factory(:user))
     delete :destroy

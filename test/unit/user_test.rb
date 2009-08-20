@@ -16,6 +16,10 @@ class UserTest < ActiveSupport::TestCase
     assert !user.valid?
   end
 
+  test "should require well-formed openid_identifier" do
+    user = Factory.build(:user, :openid_identifier => "http//foobar")
+  end
+
   test "requires that api_key is a hex code" do
     user = Factory.build(:user, :api_key => "omgblah!!!")
     assert !user.valid?
