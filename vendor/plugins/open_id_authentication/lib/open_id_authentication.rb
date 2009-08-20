@@ -81,7 +81,7 @@ module OpenIdAuthentication
     # dodge XRIs -- TODO: validate, don't just skip.
     unless ['=', '@', '+', '$', '!', '('].include?(identifier.at(0))
       # does it begin with http?  if not, add it.
-      identifier = "http://#{identifier}" unless identifier =~ %r{^http://}i
+      identifier = "http://#{identifier}" unless identifier =~ %r{^https?://}i
 
       # strip any fragments
       identifier.gsub!(/\#(.*)$/, '')
