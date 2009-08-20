@@ -11,8 +11,8 @@ class Rumble
     end
   end
 
-  def self.team(slug, api_key)
-    result = get("/teams/#{slug}.xml?api_key=#{api_key}")
+  def self.team(slug)
+    result = get("/teams/#{slug}.xml")
     result.is_a?(Hash) ? result : nil
   end
 end

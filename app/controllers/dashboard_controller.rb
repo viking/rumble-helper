@@ -3,9 +3,10 @@ class DashboardController < ApplicationController
     if current_user
       store_location
 
-      @pending_tasks = Task.pending
-      @finished_tasks = Task.finished
-      @members = Member.all(:order => 'id')
+      @team = Team.find_by_slug(current_user.team_slug)
+      @pending_tasks = @team.tasks.pending
+      @finished_tasks = @team.tasks.finished
+      @members = @team.members.find(:all, :order => 'id')
       @num_members = @members.length
       @auth_token = form_authenticity_token
 

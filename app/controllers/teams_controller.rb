@@ -55,7 +55,8 @@ class TeamsController < ApplicationController
     respond_to do |format|
       if @team.save
         flash[:notice] = 'Team was successfully created.'
-        format.html { redirect_to(team_tasks_url(@team)) }
+        current_user.assign_to_member!
+        format.html { redirect_to(tasks_url) }
         format.xml  { render :xml => @team, :status => :created, :location => @team }
       else
         format.html { render :action => "new" }

@@ -37,7 +37,15 @@ class TeamsControllerTest < ActionController::TestCase
       post :create, :team => { :public => '1' }
     end
     assert_equal user.team_slug, assigns(:team).slug
-    assert_redirected_to team_tasks_url(assigns(:team))
+    assert_redirected_to tasks_url
+  end
+
+  test "#create assigns user to a member" do
+    user = Factory(:user)
+    UserSession.create(user)
+
+    post :create, :team => { :public => '1' }
+    assert_equal assigns(:team), user.member.team
   end
 
   test "#create redirects to show if user's team exists" do

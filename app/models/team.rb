@@ -11,6 +11,7 @@ class Team < ActiveRecord::Base
   end
 
   has_many :members
+  has_many :tasks
   has_many :users, :through => :members
 
   validates_presence_of :slug

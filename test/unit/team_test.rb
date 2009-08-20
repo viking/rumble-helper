@@ -60,6 +60,12 @@ class TeamTest < ActiveSupport::TestCase
     assert team.users.include?(user)
   end
 
+  test "has_many tasks" do
+    team = Factory(:team)
+    task = Factory(:task, :team => team)
+    assert_equal [task], team.tasks
+  end
+
   #test ".public_or_current finds only public or current_user's team" do
     #UserSession.create(Factory(:user))
     #team_1 = Factory(:team, :slug => 'ninja-fu')

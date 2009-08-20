@@ -1,8 +1,7 @@
 <div class="prefix_3 grid_6 suffix_3">
   <h1><%= @task.new_record? ? "New" : "Edit" %> task</h1>
   <div class="bubble">
-    <%- url = @task.new_record? ? team_tasks_url(@team) : team_task_url(@team, @task) -%>
-    <% form_for(@task, :url => url) do |f| %>
+    <% form_for(@task) do |f| %>
       <%= f.error_messages %>
 
       <div><%= f.label :name %></div>
@@ -20,7 +19,7 @@
       <%- if @task.new_record? -%>
       <%= f.submit 'Save and continue' %> or just
       <%- end -%>
-      <%= f.submit 'Save' %> or <%= link_to 'Go back', session[:return_to] || team_tasks_path(@team) %>
+      <%= f.submit 'Save' %> or <%= link_to 'Go back', session[:return_to] || tasks_url %>
     <% end %>
   </div>
 </div>

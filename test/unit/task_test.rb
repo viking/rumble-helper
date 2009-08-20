@@ -37,6 +37,15 @@ class TaskTest < ActiveSupport::TestCase
     assert_equal [members], task.members
   end
 
+  test "belongs_to team" do
+    team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(team_data)
+    team = Factory(:team)
+
+    task = Factory.build(:task, :team => team)
+    assert_equal team, task.team
+  end
+
   test "activation from todo" do
     task = Factory(:task, :status => 'todo')
     task.activate!

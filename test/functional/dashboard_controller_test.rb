@@ -3,9 +3,12 @@ require 'test_helper'
 class DashboardControllerTest < ActionController::TestCase
   def setup
     activate_authlogic
-    @data = fixture_data('team_data')
-    Rumble.stubs(:team).with('team-shazbot').returns(@data)
+    @team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(@team_data)
     @team = Factory(:team)
+
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
     @user = Factory(:user)
   end
 
@@ -17,16 +20,18 @@ class DashboardControllerTest < ActionController::TestCase
 
   test "should get index when logged in" do
     UserSession.create(@user)
-    task_1 = Factory(:task, :status => 'in_progress')
-    task_2 = Factory(:task)
-    task_3 = Factory(:task, :status => 'done')
+    task_1 = Factory(:task, :status => 'in_progress', :team => @team)
+    task_2 = Factory(:task, :team => @team)
+    task_3 = Factory(:task, :status => 'done', :team => @team)
+    not_your_task = Factory(:task)
+    not_your_member = Factory(:member)
 
     get :index
     assert_template 'dashboard/index'
     assert_response :success
     assert_equal [task_2], assigns(:pending_tasks)
     assert_equal [task_3], assigns(:finished_tasks)
-    assert_equal Member.all, assigns(:members)
+    assert_equal @team.members, assigns(:members)
     assert assigns(:auth_token)
   end
 

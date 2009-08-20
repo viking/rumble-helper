@@ -1,61 +1,67 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class MembersControllerTest < ActionController::TestCase
   def setup
     activate_authlogic
-    @member = Factory(:member)
+
+    @team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(@team_data)
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
+
+    @team = Factory(:team)
+    @user = Factory(:user)
+    @member = @team.members.first
+
+    UserSession.create(@user)
   end
 
-  test "should render index" do
-    UserSession.create(Factory(:user, :member => @member))
+  test "should redirect from index to root_url" do
     get :index
-    assert_response :success
-    assert_equal [@member], assigns(:members)
+    assert_redirected_to root_url
   end
 
   test "should render index when requesting xml" do
-    UserSession.create(Factory(:user, :member => @member))
     get :index, :format => 'xml'
     assert_response :success
-    assert_equal [@member].to_xml, @response.body
+    assert_equal @team.members.to_xml, @response.body
   end
 
   test "should redirect from index to login if not logged in" do
+    UserSession.find.destroy
     get :index
     assert_redirected_to new_user_session_url
   end
 
   test "should redirect from show to root" do
-    UserSession.create(Factory(:user, :member => @member))
     get :show, :id => @member.to_param
     assert_redirected_to root_url
   end
 
   test "should render show when requesting xml" do
-    UserSession.create(Factory(:user, :member => @member))
     get :show, :id => @member.to_param, :format => 'xml'
     assert_response :success
     assert_equal @member.to_xml, @response.body
   end
 
   test "should redirect from show to login if not logged in" do
+    UserSession.find.destroy
     get :show, :id => @member.to_param
     assert_redirected_to new_user_session_url
   end
 
   test "should update member" do
-    UserSession.create(Factory(:user))
     put :update, :id => @member.to_param, :member => { }
-    assert_redirected_to member_path(assigns(:member))
+    assert_redirected_to root_url
   end
 
   test "should not set flash[:notice] for update for xml" do
-    UserSession.create(Factory(:user))
     put :update, :format => 'xml', :id => @member.to_param, :member => { }
     assert_nil flash[:notice]
   end
 
   test "should redirect from update to login if not logged in" do
+    UserSession.find.destroy
     put :update, :id => @member.to_param, :member => { }
     assert_redirected_to new_user_session_url
   end

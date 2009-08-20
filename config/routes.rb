@@ -2,9 +2,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :people
   map.resources :settings
   map.resources :users
-  map.resources :teams do |team|
-    team.resources :tasks
-  end
+  map.resources :tasks
+  map.resources :teams
+  map.resources :members
   map.resource :account, :controller => 'users'
   map.resource :user_session
 

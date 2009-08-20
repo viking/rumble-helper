@@ -1,11 +1,11 @@
 class TasksController < ApplicationController
-  before_filter :require_user, :except => [ :index, :show ]
+  before_filter :require_user
   before_filter :require_team
 
   # GET /tasks
   # GET /tasks.xml
   def index
-    @tasks = Task.all
+    @tasks = @team.tasks.all
 
     respond_to do |format|
       format.html do
@@ -21,10 +21,10 @@ class TasksController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        redirect_to team_tasks_url(@team)
+        redirect_to tasks_url
       end
       format.xml do
-        task = Task.find(params[:id])
+        task = @team.tasks.find(params[:id])
         render :xml => task
       end
     end
@@ -33,7 +33,7 @@ class TasksController < ApplicationController
   # GET /tasks/new
   # GET /tasks/new.xml
   def new
-    @task = Task.new
+    @task = @team.tasks.build
 
     respond_to do |format|
       format.html { render :template => 'tasks/form' }
@@ -43,23 +43,23 @@ class TasksController < ApplicationController
 
   # GET /tasks/1/edit
   def edit
-    @task = Task.find(params[:id])
+    @task = @team.tasks.find(params[:id])
     render :template => 'tasks/form'
   end
 
   # POST /tasks
   # POST /tasks.xml
   def create
-    @task = Task.new(params[:task])
+    @task = @team.tasks.build(params[:task])
 
     respond_to do |format|
       if @task.save
         flash[:notice] = 'Task was successfully created.'
         format.html do
           if params[:commit] == "Save and continue"
-            redirect_to new_team_task_url(@team)
+            redirect_to new_task_url
           else
-            redirect_back_or_default team_tasks_url(@team)
+            redirect_back_or_default tasks_url
           end
         end
         format.xml  { render :xml => @task, :status => :created, :location => @task }
@@ -73,14 +73,14 @@ class TasksController < ApplicationController
   # PUT /tasks/1
   # PUT /tasks/1.xml
   def update
-    @task = Task.find_by_id(params[:id])
-
+    @task = @team.tasks.find_by_id(params[:id])
     return head(:not_found) if @task.nil?
+
     respond_to do |format|
       if @task.update_attributes(params[:task])
         format.html do
           flash[:notice] = 'Task was successfully updated.'
-          redirect_back_or_default team_tasks_url(@team)
+          redirect_back_or_default tasks_url
         end
         format.xml  { head :ok }
       else
@@ -93,30 +93,21 @@ class TasksController < ApplicationController
   # DELETE /tasks/1
   # DELETE /tasks/1.xml
   def destroy
-    @task = Task.find_by_id(params[:id])
+    @task = @team.tasks.find_by_id(params[:id])
     return head(:not_found) if @task.nil?
 
     @task.destroy
     respond_to do |format|
-      format.html { redirect_back_or_default team_tasks_url(@team) }
+      format.html { redirect_back_or_default tasks_url }
       format.xml  { head :ok }
     end
   end
 
   private
     def require_team
-      valid = true
-      begin
-        @team = Team.find(params[:team_id], :conditions => { :public => true })
-        if !(action_name == 'index' || action_name == 'show')
-          valid = (@team.slug == current_user.team_slug)
-        end
-      rescue ActiveRecord::RecordNotFound
-        valid = false
-      end
-
-      if !valid
-        render :nothing => true, :status => 404
+      @team = Team.find_by_slug(current_user.team_slug)
+      if @team.nil?
+        redirect_to new_team_url
         return false
       end
     end

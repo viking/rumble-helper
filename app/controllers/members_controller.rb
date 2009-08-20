@@ -1,14 +1,13 @@
 class MembersController < ApplicationController
   before_filter :require_user
+  before_filter :require_team
 
   # GET /members
   # GET /members.xml
   def index
-    @members = Member.all
-
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @members }
+      format.html { redirect_to root_url }
+      format.xml  { render :xml => @team.members }
     end
   end
 
@@ -20,7 +19,7 @@ class MembersController < ApplicationController
         redirect_to root_url
       end
       format.xml do
-        render :xml => Member.find(params[:id])
+        render :xml => @team.members.find(params[:id])
       end
     end
   end
@@ -28,13 +27,13 @@ class MembersController < ApplicationController
   # PUT /members/1
   # PUT /members/1.xml
   def update
-    @member = Member.find(params[:id])
+    @member = @team.members.find(params[:id])
 
     respond_to do |format|
       if @member.update_attributes(params[:member])
         format.html do
-          redirect_to(@member)
           flash[:notice] = 'Member was successfully updated.'
+          redirect_to(root_url)
         end
         format.xml  { head :ok }
       else
@@ -43,4 +42,13 @@ class MembersController < ApplicationController
       end
     end
   end
+
+  private
+    def require_team
+      @team = Team.find_by_slug(current_user.team_slug)
+      if @team.nil?
+        redirect_to new_team_url
+        return false
+      end
+    end
 end

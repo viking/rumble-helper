@@ -20,6 +20,7 @@ class Task < ActiveRecord::Base
   end
 
   has_many :members, :dependent => :nullify
+  belongs_to :team
 
   validates_presence_of :name
   validates_presence_of :team_id
