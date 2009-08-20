@@ -1,20 +1,19 @@
 <div class="grid_12">
-  <h1>What's your team slug?</h1>
+  <h1>Team Setup</h1>
   <div class="bubble">
-    <% form_for(@team, :url => team_url) do |f| %>
+    <% form_for(@team, :url => teams_url) do |f| %>
       <%= f.error_messages %>
 
+      <div class="minititle">Team name</div>
+      <div><%=h current_user.team_name %></div>
+      <br/>
+
       <p>
-        Your slug is the last part of the URL for your team's Rumble profile:<br/>
-        <%= image_tag 'slug.png' %>
+        <%= f.label :public, "Let others see your team's tasks and info?" %>
+        <%= f.check_box :public, :style => 'vertical-align: middle;' %>
       </p>
-      <p>
-        <%= f.label :slug %><br />
-        <%= f.text_field :slug %>
-      </p>
-      <p>
-        <%= f.submit 'Create' %>
-      </p>
+
+      <%= f.submit 'Create' %>
     <% end %>
   </div>
 </div>

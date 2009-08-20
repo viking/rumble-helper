@@ -1,10 +1,6 @@
 class DashboardController < ApplicationController
   def index
-    if Team.count == 0
-      redirect_to new_team_url
-    elsif User.count == 0
-      redirect_to new_account_url
-    else
+    if current_user
       store_location
 
       @pending_tasks = Task.pending
@@ -16,6 +12,8 @@ class DashboardController < ApplicationController
       if request.xhr?
         render :partial => 'tasks'
       end
+    else
+      render :template => 'dashboard/intro'
     end
   end
 end

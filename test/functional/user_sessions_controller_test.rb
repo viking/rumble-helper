@@ -3,6 +3,8 @@ require 'test_helper'
 class UserSessionsControllerTest < ActionController::TestCase
   def setup
     activate_authlogic
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
   end
 
   test "should get new" do

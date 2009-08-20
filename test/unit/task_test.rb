@@ -26,6 +26,11 @@ class TaskTest < ActiveSupport::TestCase
     assert !task.valid?
   end
 
+  test "requires team" do
+    task = Factory.build(:task, :team_id => nil)
+    assert !task.valid?
+  end
+
   test "has_many members" do
     task = Factory(:task)
     members = Factory(:member, :task => task)

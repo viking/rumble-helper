@@ -13,8 +13,9 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
 
   create_table "members", :force => true do |t|
     t.string   "nickname"
+    t.integer  "user_id"
+    t.integer  "team_id"
     t.integer  "task_id"
-    t.string   "invitation_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -41,6 +42,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.string   "status"
     t.datetime "status_changed_at"
     t.integer  "total_effort_spent"
+    t.integer  "team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -51,13 +53,13 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.string   "app_description"
     t.string   "app_name"
     t.string   "app_url"
+    t.string   "status"
+    t.boolean  "public"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
-    t.string   "nickname"
-    t.string   "email"
     t.string   "persistence_token"
     t.integer  "login_count"
     t.integer  "failed_login_count"
@@ -67,9 +69,13 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.string   "current_login_ip"
     t.string   "last_login_ip"
     t.string   "perishable_token",   :default => "", :null => false
+    t.string   "nickname"
+    t.string   "email"
+    t.string   "user_type"
     t.string   "openid_identifier"
-    t.string   "invitation_code"
-    t.integer  "member_id"
+    t.string   "api_key"
+    t.string   "team_slug"
+    t.string   "team_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

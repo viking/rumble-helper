@@ -1,13 +1,12 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :members
-
   map.resources :people
   map.resources :settings
-  map.resources :tasks
-  map.resource :account, :controller => 'users'
   map.resources :users
+  map.resources :teams do |team|
+    team.resources :tasks
+  end
+  map.resource :account, :controller => 'users'
   map.resource :user_session
-  map.resource :team
 
   # The priority is based upon order of creation: first created -> highest priority.
 

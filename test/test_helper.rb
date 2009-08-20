@@ -41,5 +41,13 @@ end
 require 'mocha'
 
 def fixture_data(name)
-  YAML.load_file(ActionController::TestCase.send(:fixture_path)+"/files/#{name}.yml")
+  YAML.load_file(ActionController::TestCase.send(:fixture_path)+"files/#{name}.yml")
+end
+
+module HTTParty
+  module ClassMethods
+    def get(*args)
+      raise "I shouldn't ever be called during a test"
+    end
+  end
 end

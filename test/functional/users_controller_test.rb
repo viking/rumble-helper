@@ -1,65 +1,37 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   def setup
     activate_authlogic
-    @team = Factory(:team)
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
+
+    @team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(@team_data)
   end
 
   test "should get new" do
     get :new
     assert_response :success
-    assert_equal Member.all, assigns(:members)
   end
 
-  test "should display member_id instead of invitation_code if first user" do
-    @controller.instance_variable_set("@current_user", nil)   # lame.
-    User.delete_all
-    get :new
-    assert_select 'input[name=?]', "user[invitation_code]", false
-    assert_select 'select[name=?]', "user[member_id]"
-  end
-
-  test "should display invitation_code instead of member_id if not first user" do
-    @controller.instance_variable_set("@current_user", nil)   # lame.
-    Factory(:user, :member => Member.first)
-    get :new
-    assert_select 'input[name=?]', "user[invitation_code]"
-    assert_select 'select[name=?]', "user[member_id]", false
-  end
-
-  test "should redirect from new to root when all members are accounted for" do
-    @controller.instance_variable_set("@current_user", nil)   # lame.
-
-    Member.all.each { |m| Factory(:user, :member => m) }
-    get :new
-    assert_redirected_to root_url
-  end
-
-  test "should create user" do
-    Factory(:task)
-    user = User.new
-    user.expects(:save).yields(true)
-    User.expects(:new).with('openid_identifier' => 'foo').returns(user)
-    post :create, :user => { :openid_identifier => "foo" }
-    assert_redirected_to root_url
-  end
-
-  test "should redirect from create to members_url if this is the first user" do
-    User.delete_all
-    user = User.new
+  test "#create should redirect to new_team_url if team doesn't exist" do
+    user = mock('user', :team_slug => 'team-shazbot')
     user.expects(:save).yields(true)
     User.expects(:new).returns(user)
-    User.expects(:count).returns(1)
-    post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
-    assert_redirected_to members_url
+    post :create, :user => { :api_key => 'blahblah', :openid_identifier => "foo" }
+    assert_redirected_to new_team_url
   end
 
-  test "should redirect from create to root when all members are accounted for" do
-    @controller.instance_variable_set("@current_user", nil)   # lame.
+  test "#create should set user's member if team exists" do
+    team = Factory(:team)
 
-    Member.all.each { |m| Factory(:user, :member => m) }
-    post :create, :user => { :openid_identifier => "https://me.yahoo.com/a/9W0FJjRj0o981TMSs0vqVxPdmMUVOQ--" }
+    user = mock('user', :team_slug => 'team-shazbot')
+    User.expects(:new).returns(user)
+    user.expects(:save).yields(true)
+    user.expects(:assign_to_member!)
+
+    post :create, :user => { :api_key => 'blahblah', :openid_identifier => "foo" }
     assert_redirected_to root_url
   end
 

@@ -6,6 +6,8 @@ class CreateTeams < ActiveRecord::Migration
       t.string :app_description
       t.string :app_name
       t.string :app_url
+      t.string :status
+      t.boolean :public
 
       t.timestamps
     end

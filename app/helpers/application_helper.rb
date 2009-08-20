@@ -1,3 +1,5 @@
-# Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def ui_icon(name, options = {})
+    content_tag('span', nil, options.merge(:class => "ui-icon ui-icon-#{name}"))
+  end
 end

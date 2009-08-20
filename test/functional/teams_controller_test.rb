@@ -1,50 +1,79 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class TeamsControllerTest < ActionController::TestCase
   def setup
     activate_authlogic
-    @data = fixture_data('team_data')
-    Rumble.stubs(:team).with('team-shazbot').returns(@data)
-    @team = Factory(:team)
+    @team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(@team_data)
+
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
   end
 
   test "should get new" do
-    Team.delete_all
+    UserSession.create(Factory(:user))
     get :new
     assert_response :success
   end
 
-  test "should redirect from new to show if team exists" do
+  test "#new redirects to show if user's team exists" do
+    team = Factory(:team)
+    UserSession.create(Factory(:user))
     get :new
-    assert_redirected_to 'team'
+    assert_redirected_to team_url(team)
   end
 
-  test "should create team" do
-    Team.delete_all
+  test "#new should require a user" do
+    @controller.stubs(:current_user).returns(nil)
+    get :new
+    assert_redirected_to new_user_session_url
+  end
+
+  test "should create team, getting slug from current_user" do
+    user = Factory(:user)
+    UserSession.create(user)
+
     assert_difference('Team.count') do
-      post :create, :team => Factory.attributes_for(:team)
+      post :create, :team => { :public => '1' }
     end
-    assert_redirected_to new_account_url
+    assert_equal user.team_slug, assigns(:team).slug
+    assert_redirected_to team_tasks_url(assigns(:team))
   end
 
-  test "should redirect from create to show if team exists" do
+  test "#create redirects to show if user's team exists" do
+    team = Factory(:team)
+    UserSession.create(Factory(:user))
     assert_no_difference('Team.count') do
-      post :create, :team => Factory.attributes_for(:team)
+      post :create, :team => { :public => '1' }
     end
-    assert_redirected_to 'team'
+    assert_redirected_to team_url(team)
+  end
+
+  test "#create should require a user" do
+    @controller.stubs(:current_user).returns(nil)
+    post :create, :team => { :public => '1' }
+    assert_redirected_to new_user_session_url
   end
 
   test "should show team" do
-    get :show
+    team = Factory(:team)
+    get :show, :id => team.to_param
     assert_response :success
-    assert_equal @team, assigns(:team)
-    assert_equal Member.all, assigns(:members)
+    assert_equal team, assigns(:team)
   end
 
-  test "should redirect from show to new if no team" do
-    Team.delete_all
-    get :show
-    assert_redirected_to 'team/new'
+  test "should not show private team" do
+    team = Factory(:team, :public => false)
+    get :show, :id => team.to_param
+    assert_response 404
+  end
+
+  test "should show current user's team, even if private" do
+    team = Factory(:team, :public => false)
+    UserSession.create(Factory(:user))
+    get :show, :id => team.to_param
+    assert_response :success
+    assert_equal team, assigns(:team)
   end
 
   #test "should get edit" do

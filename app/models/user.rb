@@ -1,8 +1,9 @@
 class User < ActiveRecord::Base
+  attr_reader :data
+
   acts_as_authentic do |c|
     c.merge_validates_length_of_email_field_options :allow_nil => true
     c.merge_validates_format_of_email_field_options :allow_nil => true
-    c.openid_optional_fields [:nickname, :email]
 
     def attributes_to_save
       attrs_to_save = attributes.clone.delete_if do |k, v|
@@ -18,35 +19,41 @@ class User < ActiveRecord::Base
     end
   end
 
-  belongs_to :member
-
-  # if first user
-  validates_presence_of :member_id, :on => :create, :if => 'User.count == 0'
-
-  # if more than one user
-  validates_each(:invitation_code, :on => :create, :if => 'User.count > 0') do |record, attr, value|
-    if value.nil?
-      record.errors.add(attr, 'cannot be blank')
-    elsif Member.unassigned.count(:conditions => { :invitation_code => value }) == 0
+  before_validation :fetch_data
+  validates_presence_of :api_key, :on => :create
+  validates_each :api_key do |record, attr, value|
+    if record.data.nil?
       record.errors.add(attr, 'is invalid')
     end
   end
-  before_create :set_member_from_code, :set_nickname
+
+  before_create :set_attribs
+
+  has_one :member
+  has_one :team, :through => :member
+
+  def assign_to_member!
+    team = Team.find_by_slug(self.team_slug)
+    member = team.members.find_by_nickname(self.nickname)
+    member.update_attribute(:user_id, self.id)
+  end
 
   protected
-    def set_member_from_code
-      if User.count > 0
-        self.member = Member.find_by_invitation_code(self.invitation_code)
-      end
-    end
-
-    def set_nickname
-      self.nickname = member.nickname   if self.nickname.blank?
+    def fetch_data
+      @data ||= Rumble.identity(self.api_key)
     end
 
     def validate
-      if self.new_record? && User.count >= 4
-        errors.add_to_base("You can only have 4 people on your team, cheater!")
+      if self.user_type && self.user_type != 'participant'
+        self.errors.add_to_base('You must be a participant to sign up.')
       end
+    end
+
+    def set_attribs
+      self.nickname = @data['hash']['details']['nickname']
+      self.user_type = @data['hash']['details']['user_type']
+      self.email = @data['hash']['details']['email']
+      self.team_slug = @data['hash']['details']['team']['slug']
+      self.team_name = @data['hash']['details']['team']['name']
     end
 end

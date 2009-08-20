@@ -1,5 +1,8 @@
+<%- @subtitle = 'Signup' -%>
+<%= javascript_include_tag 'jquery.tooltip.min' %>
+
 <div class="prefix_3 grid_6 suffix_3">
-<h1>Who you be?</h1>
+<h2>Who you be?</h2>
 
 <div class="bubble">
 <%= stylesheet_link_tag 'openid' %>
@@ -8,15 +11,13 @@
 <% form_for @user, :url => account_url, :html => {:id => "openid_form"} do |f| %>
   <%= f.error_messages %>
 
-  <%- if @num_users == 0 -%>
-  <div><%= f.label :member_id, "Which team member are you?" %></div>
-  <div><%= f.collection_select :member_id, @members, :id, :nickname %></div>
+  <div class="fleft">
+    <%= f.label :api_key, "Your Rumble API Key" %>
+    <%= ui_icon('info', 'title' => "Get this from your Rumble profile page") %>
+  </div>
+  <div class="clear"></div>
+  <div><%= f.text_field :api_key %></div>
   <br/>
-  <%- else -%>
-  <div><%= f.label :invitation_code %></div>
-  <div><%= f.text_field :invitation_code %></div>
-  <br/>
-  <%- end -%>
 
   <%= render :partial => 'openid', :locals => { :f => f } %>
 
@@ -27,4 +28,5 @@
 
 <% javascript_tag do %>
   openid.init('openid_identifier');
+  $('.ui-icon-info').tooltip();
 <% end %>

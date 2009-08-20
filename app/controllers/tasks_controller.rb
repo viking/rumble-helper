@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_filter :require_user, :except => [ :index, :show ]
+  before_filter :require_team
 
   # GET /tasks
   # GET /tasks.xml
@@ -20,7 +21,7 @@ class TasksController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        redirect_to tasks_url
+        redirect_to team_tasks_url(@team)
       end
       format.xml do
         task = Task.find(params[:id])
@@ -56,9 +57,9 @@ class TasksController < ApplicationController
         flash[:notice] = 'Task was successfully created.'
         format.html do
           if params[:commit] == "Save and continue"
-            redirect_to new_task_url
+            redirect_to new_team_task_url(@team)
           else
-            redirect_back_or_default tasks_url
+            redirect_back_or_default team_tasks_url(@team)
           end
         end
         format.xml  { render :xml => @task, :status => :created, :location => @task }
@@ -79,7 +80,7 @@ class TasksController < ApplicationController
       if @task.update_attributes(params[:task])
         format.html do
           flash[:notice] = 'Task was successfully updated.'
-          redirect_back_or_default tasks_url
+          redirect_back_or_default team_tasks_url(@team)
         end
         format.xml  { head :ok }
       else
@@ -97,8 +98,26 @@ class TasksController < ApplicationController
 
     @task.destroy
     respond_to do |format|
-      format.html { redirect_back_or_default tasks_url }
+      format.html { redirect_back_or_default team_tasks_url(@team) }
       format.xml  { head :ok }
     end
   end
+
+  private
+    def require_team
+      valid = true
+      begin
+        @team = Team.find(params[:team_id], :conditions => { :public => true })
+        if !(action_name == 'index' || action_name == 'show')
+          valid = (@team.slug == current_user.team_slug)
+        end
+      rescue ActiveRecord::RecordNotFound
+        valid = false
+      end
+
+      if !valid
+        render :nothing => true, :status => 404
+        return false
+      end
+    end
 end

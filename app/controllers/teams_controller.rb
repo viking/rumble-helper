@@ -1,15 +1,29 @@
 class TeamsController < ApplicationController
-  before_filter :require_user, :only => [ :edit, :update ]
+  before_filter :require_user, :except => [ :index, :show ]
+  before_filter :requires_no_team, :only => [ :new, :create ]
+
+  # GET /teams
+  # GET /teams.xml
+  #def index
+  #end
 
   # GET /teams/1
   # GET /teams/1.xml
   def show
-    @team = Team.first
-    if @team.nil?
-      redirect_to :action => 'new'
+    begin
+      conditions = ["public = ?", true]
+      if current_user
+        conditions[0] << "OR slug = ?"
+        conditions << current_user.team_slug
+      end
+      @team = Team.find(params[:id], {
+        :include => :members,
+        :conditions => conditions
+      })
+    rescue ActiveRecord::RecordNotFound
+      render :nothing => true, :status => 404
       return
     end
-    @members = Member.all
 
     respond_to do |format|
       format.html # show.html.erb
@@ -20,11 +34,6 @@ class TeamsController < ApplicationController
   # GET /teams/new
   # GET /teams/new.xml
   def new
-    if Team.count > 0
-      redirect_to :action => 'show'
-      return
-    end
-
     @team = Team.new
 
     respond_to do |format|
@@ -41,17 +50,12 @@ class TeamsController < ApplicationController
   # POST /teams
   # POST /teams.xml
   def create
-    if Team.count > 0
-      redirect_to :action => 'show'
-      return
-    end
-
-    @team = Team.new(params[:team])
+    @team = Team.new(params[:team].merge({ :slug => current_user.team_slug }))
 
     respond_to do |format|
       if @team.save
         flash[:notice] = 'Team was successfully created.'
-        format.html { redirect_to(new_account_url) }
+        format.html { redirect_to(team_tasks_url(@team)) }
         format.xml  { render :xml => @team, :status => :created, :location => @team }
       else
         format.html { render :action => "new" }
@@ -76,4 +80,12 @@ class TeamsController < ApplicationController
       #end
     #end
   #end
+
+  private
+    def requires_no_team
+      if (team = Team.find_by_slug(current_user.team_slug))
+        redirect_to team_url(team)
+        return false
+      end
+    end
 end

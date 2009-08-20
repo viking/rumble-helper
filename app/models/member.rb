@@ -5,22 +5,18 @@ class Member < ActiveRecord::Base
   validates_presence_of :nickname
 
   belongs_to :task
-  has_one :user
+  belongs_to :user
+  belongs_to :team
 
-  before_create :set_invitation_code
   before_save :remember_task
   after_save :update_task
 
-  named_scope(:unassigned, {
-    :joins => "LEFT JOIN users ON members.id = users.member_id",
-    :conditions => "users.member_id IS NULL"
-  })
+  #named_scope(:unassigned, {
+    #:joins => "LEFT JOIN users ON members.id = users.member_id",
+    #:conditions => "users.member_id IS NULL"
+  #})
 
   private
-    def set_invitation_code
-      self.invitation_code = Authlogic::Random.friendly_token
-    end
-
     def remember_task
       if @move_task_from_member
         other = Member.find(@move_task_from_member)

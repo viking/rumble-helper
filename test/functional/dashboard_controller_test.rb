@@ -2,30 +2,27 @@ require 'test_helper'
 
 class DashboardControllerTest < ActionController::TestCase
   def setup
+    activate_authlogic
     @data = fixture_data('team_data')
     Rumble.stubs(:team).with('team-shazbot').returns(@data)
     @team = Factory(:team)
     @user = Factory(:user)
   end
 
-  test "should redirect to signup if no users" do
-    User.delete_all
+  test "should render intro if not logged in" do
+    @controller.instance_variable_set("@current_user", nil)   # lame.
     get :index
-    assert_redirected_to 'account/new'
+    assert_template 'dashboard/intro'
   end
 
-  test "should redirect to new_team_url if no users" do
-    Team.delete_all
-    get :index
-    assert_redirected_to 'team/new'
-  end
-
-  test "should get index" do
+  test "should get index when logged in" do
+    UserSession.create(@user)
     task_1 = Factory(:task, :status => 'in_progress')
     task_2 = Factory(:task)
     task_3 = Factory(:task, :status => 'done')
 
     get :index
+    assert_template 'dashboard/index'
     assert_response :success
     assert_equal [task_2], assigns(:pending_tasks)
     assert_equal [task_3], assigns(:finished_tasks)

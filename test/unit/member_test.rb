@@ -1,6 +1,14 @@
 require 'test_helper'
 
 class MemberTest < ActiveSupport::TestCase
+  def setup
+    @identity = fixture_data('identity')
+    Rumble.stubs(:identity).returns(@identity)
+
+    @team_data = fixture_data('team_data')
+    Rumble.stubs(:team).returns(@team_data)
+  end
+
   test "protects nickname from mass assignment" do
     member = Member.new(:nickname => 'foobar')
     assert_nil member.nickname
@@ -11,21 +19,22 @@ class MemberTest < ActiveSupport::TestCase
     assert !member.valid?
   end
 
-  test "generates invitation code on create" do
-    member = Factory(:member)
-    assert_not_nil member.invitation_code
-  end
-
   test "belongs_to task" do
     task = Factory(:task)
     member = Factory(:member, :task => task)
     assert_equal task, member.task
   end
 
-  test "has_one user" do
-    member = Factory(:member)
-    user = Factory(:user, :member => member)
+  test "belongs_to user" do
+    user = Factory(:user)
+    member = Factory(:member, :user => user)
     assert_equal user, member.user
+  end
+
+  test "belongs_to team" do
+    team = Factory(:team)
+    member = Factory(:member, :team => team)
+    assert_equal team, member.team
   end
 
   test "activates task" do
@@ -72,11 +81,5 @@ class MemberTest < ActiveSupport::TestCase
     assert_nothing_raised do
       member.update_attribute(:task_id, task_2.id)
     end
-  end
-
-  test ".unassigned should find members that don't have users" do
-    members = Array.new(4) { Factory(:member) }
-    user = Factory(:user, :member => members.first)
-    assert_equal members[1..-1], Member.unassigned
   end
 end

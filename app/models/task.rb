@@ -22,6 +22,7 @@ class Task < ActiveRecord::Base
   has_many :members, :dependent => :nullify
 
   validates_presence_of :name
+  validates_presence_of :team_id
   validates_inclusion_of :priority, :in => PRIORITIES
   validates_inclusion_of :status, :in => STATUSES
 

@@ -7,6 +7,7 @@ class CreateTasks < ActiveRecord::Migration
       t.string :status
       t.datetime :status_changed_at
       t.integer :total_effort_spent
+      t.integer :team_id
 
       t.timestamps
     end
