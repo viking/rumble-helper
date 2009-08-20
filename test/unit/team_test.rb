@@ -30,6 +30,30 @@ class TeamTest < ActiveSupport::TestCase
     assert_equal "http://shazbot.r09.railsrumble.com", team.app_url
   end
 
+  test "is invalid if rumble data is bogus" do
+    Rumble.stubs(:team).returns({'hash' => {'crapforcrap' => 'blahblah'}})
+    team = Factory.build(:team)
+    assert !team.valid?
+  end
+
+  test "is invalid if data is missing" do
+    @team_data['team']['id'] = nil
+    team = Factory.build(:team)
+    assert !team.valid?
+  end
+
+  test "is invalid if team slug is bogus" do
+    Rumble.stubs(:team).returns("gibberish!")
+    team = Factory.build(:team, :slug => "blah!!!")
+    assert !team.valid?
+  end
+
+  test "is invalid when server is down" do
+    Rumble.stubs(:team).raises(SocketError)
+    team = Factory.build(:team)
+    assert !team.valid?
+  end
+
   test "assigns users with same rumble_id to team" do
     user_1 = Factory(:user)
     user_2 = Factory(:user)

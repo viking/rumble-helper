@@ -14,7 +14,6 @@ class Team < ActiveRecord::Base
   has_many :members
   has_many :tasks
 
-  before_save :set_attribs
   before_update :set_dull
   after_create :create_members_and_find_users
 
@@ -31,23 +30,42 @@ class Team < ActiveRecord::Base
       end
 
       if do_fetch
-        fetch_data
-        if self.data.nil?
-          self.errors.add(:slug, "is invalid")
+        connection_error = false
+        begin
+          fetch_data
+          if !@data.is_a?(Hash)
+            self.errors.add(:slug, 'is invalid')
+          else
+            if !set_attribs
+              connection_error = true
+            end
+          end
+        rescue SocketError, NoMethodError
+          connection_error = true
+        end
+        if connection_error
+          self.errors.add_to_base("Error connecting to the Rails Rumble server, try again later")
         end
       end
     end
 
     def fetch_data
-      @data ||= Rumble.team(self.slug, self.api_key)
+      @data = Rumble.team(self.slug, self.api_key)
     end
 
     def set_attribs
-      self.rumble_id = @data['team']['id']
-      self.name = @data['team']['name']
-      self.app_name = @data['team']['entry']['name']
-      self.app_description = @data['team']['entry']['description']
-      self.app_url = @data['team']['entry']['direct_url']
+      attribs = {
+        'rumble_id' => @data['team']['id'],
+        'name' => @data['team']['name']
+      }
+      return false if attribs.values.any? { |v| v.nil? }
+      attribs.merge!({
+        'app_name' => @data['team']['entry']['name'],
+        'app_description' => @data['team']['entry']['description'],
+        'app_url' => @data['team']['entry']['direct_url']
+      })
+      self.attributes = attribs
+      true
     end
 
     def create_members_and_find_users

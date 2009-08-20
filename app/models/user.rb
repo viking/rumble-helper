@@ -19,39 +19,62 @@ class User < ActiveRecord::Base
     end
   end
 
-  before_validation :fetch_data
-  validates_presence_of :api_key, :on => :create
-  validates_each :api_key do |record, attr, value|
-    if record.data.nil?
-      record.errors.add(attr, 'is invalid')
-    end
-  end
-
-  before_create :set_attribs
-
   belongs_to :team
 
   protected
     def fetch_data
-      @data ||= Rumble.identity(self.api_key)
+      @data = Rumble.identity(self.api_key)
     end
 
     def validate
       if self.user_type && self.user_type != 'participant'
         self.errors.add_to_base('You must be a participant to sign up.')
       end
+      if self.new_record?
+        if self.api_key.blank?
+          self.errors.add(:api_key, 'is required')
+        elsif self.api_key !~ /^[a-fA-F0-9]+$/
+          self.errors.add(:api_key, 'is not a hex code')
+        else
+          connection_error = false
+          begin
+            self.fetch_data
+            if @data.is_a?(Hash) && @data.has_key?('hash') && @data['hash']['error']
+              self.errors.add(:api_key, 'is invalid')
+            else
+              if !set_attribs
+                connection_error = true
+              end
+            end
+          rescue SocketError, NoMethodError
+            connection_error = true
+          end
+
+          if connection_error
+            # data is bad
+            self.errors.add_to_base("Error connecting to the Rails Rumble server, try again later")
+          end
+        end
+      end
     end
 
     def set_attribs
-      self.nickname = @data['hash']['details']['nickname']
-      self.user_type = @data['hash']['details']['user_type']
-      self.email = @data['hash']['details']['email']
-      self.team_rumble_id = @data['hash']['details']['team']['id']
-      self.team_slug = @data['hash']['details']['team']['slug']
-      self.team_name = @data['hash']['details']['team']['name']
+      attribs = {
+        'nickname' => @data['hash']['details']['nickname'],
+        'user_type' => @data['hash']['details']['user_type'],
+        'email' => @data['hash']['details']['email'],
+        'team_rumble_id' => @data['hash']['details']['team']['id'],
+        'team_slug' => @data['hash']['details']['team']['slug'],
+        'team_name' => @data['hash']['details']['team']['name']
+      }
+      if attribs.values.any? { |v| v.nil? }
+        return false
+      end
+      self.attributes = attribs
 
       if (team = Team.find_by_rumble_id(self.team_rumble_id))
         self.team_id = team.id
       end
+      true
     end
 end

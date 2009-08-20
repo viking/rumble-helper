@@ -16,9 +16,14 @@ class UserTest < ActiveSupport::TestCase
     assert !user.valid?
   end
 
-  test "requires valid api_key" do
-    Rumble.stubs(:identity).returns(nil)
-    user = Factory.build(:user, :api_key => 'blahblahblah')
+  test "requires that api_key is a hex code" do
+    user = Factory.build(:user, :api_key => "omgblah!!!")
+    assert !user.valid?
+  end
+
+  test "requires api_key that checks out with the rumble site" do
+    Rumble.stubs(:identity).returns({'hash'=>{'error'=>'You are not logged in'}})
+    user = Factory.build(:user, :api_key => 'abc123')
     assert !user.valid?
   end
 
@@ -35,6 +40,24 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "team-shazbot", user.team_slug
     assert_equal "Team Shazbot", user.team_name
     assert_equal 3, user.team_rumble_id
+  end
+
+  test "is invalid if rumble data is bogus" do
+    Rumble.stubs(:identity).returns({'hash' => {'crapforcrap' => 'blahblah'}})
+    user = Factory.build(:user)
+    assert !user.valid?
+  end
+
+  test "is invalid when server is down" do
+    Rumble.stubs(:identity).raises(SocketError)
+    user = Factory.build(:user)
+    assert !user.valid?
+  end
+
+  test "is invalid if data is missing" do
+    @identity['hash']['details']['nickname'] = nil
+    user = Factory.build(:user)
+    assert !user.valid?
   end
 
   test "automatically assigns team_id if team with same rumble_id is found" do

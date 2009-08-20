@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
   end
 
   create_table "teams", :force => true do |t|
-    t.string   "rumble_id"
+    t.integer  "rumble_id"
     t.string   "slug"
     t.string   "name"
     t.string   "app_description"
