@@ -13,7 +13,6 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
 
   create_table "members", :force => true do |t|
     t.string   "nickname"
-    t.integer  "user_id"
     t.integer  "team_id"
     t.integer  "task_id"
     t.datetime "created_at"
@@ -48,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
   end
 
   create_table "teams", :force => true do |t|
+    t.string   "rumble_id"
     t.string   "slug"
     t.string   "name"
     t.string   "app_description"
@@ -74,6 +74,8 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.string   "user_type"
     t.string   "openid_identifier"
     t.string   "api_key"
+    t.integer  "team_id"
+    t.integer  "team_rumble_id"
     t.string   "team_slug"
     t.string   "team_name"
     t.datetime "created_at"

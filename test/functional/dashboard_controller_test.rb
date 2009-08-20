@@ -10,16 +10,17 @@ class DashboardControllerTest < ActionController::TestCase
     @identity = fixture_data('identity')
     Rumble.stubs(:identity).returns(@identity)
     @user = Factory(:user)
+
+    UserSession.create(@user)
   end
 
   test "should render intro if not logged in" do
-    @controller.instance_variable_set("@current_user", nil)   # lame.
+    UserSession.find.destroy
     get :index
     assert_template 'dashboard/intro'
   end
 
   test "should get index when logged in" do
-    UserSession.create(@user)
     task_1 = Factory(:task, :status => 'in_progress', :team => @team)
     task_2 = Factory(:task, :team => @team)
     task_3 = Factory(:task, :status => 'done', :team => @team)
@@ -33,6 +34,12 @@ class DashboardControllerTest < ActionController::TestCase
     assert_equal [task_3], assigns(:finished_tasks)
     assert_equal @team.members, assigns(:members)
     assert assigns(:auth_token)
+  end
+
+  test "should redirect to new_team_url if user doesn't have team" do
+    @user.update_attribute(:team_id, nil)
+    get :index
+    assert_redirected_to new_team_url
   end
 
   test "should store location for index" do

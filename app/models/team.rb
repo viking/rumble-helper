@@ -1,4 +1,5 @@
 class Team < ActiveRecord::Base
+  attr_accessor :api_key
   attr_reader :data
 
   include AASM
@@ -12,34 +13,44 @@ class Team < ActiveRecord::Base
 
   has_many :members
   has_many :tasks
-  has_many :users, :through => :members
 
-  validates_presence_of :slug
-
-  before_validation :fetch_data
   before_save :set_attribs
   before_update :set_dull
-  after_create :set_members
-
-  validates_each :slug do |record, attr, value|
-    if record.data.nil?
-      record.errors.add(attr, 'is invalid')
-    end
-  end
+  after_create :create_members_and_find_users
 
   private
+    def validate
+      do_fetch = true
+      if self.slug.blank?
+        do_fetch = false
+        self.errors.add(:slug, "cannot be blank")
+      end
+      if self.api_key.blank?
+        do_fetch = false
+        self.errors.add(:api_key, "cannot be blank")
+      end
+
+      if do_fetch
+        fetch_data
+        if self.data.nil?
+          self.errors.add(:slug, "is invalid")
+        end
+      end
+    end
+
     def fetch_data
-      @data ||= Rumble.team(self.slug)
+      @data ||= Rumble.team(self.slug, self.api_key)
     end
 
     def set_attribs
+      self.rumble_id = @data['team']['id']
       self.name = @data['team']['name']
       self.app_name = @data['team']['entry']['name']
       self.app_description = @data['team']['entry']['description']
       self.app_url = @data['team']['entry']['direct_url']
     end
 
-    def set_members
+    def create_members_and_find_users
       if (members = @data['team']['members'])
         members.each do |hash|
           Member.create do |member|
@@ -47,6 +58,11 @@ class Team < ActiveRecord::Base
             member.team = self
           end
         end
+      end
+
+      users = User.all(:conditions => { :team_rumble_id => self.rumble_id })
+      users.each do |user|
+        user.update_attribute(:team_id, self.id)
       end
     end
 

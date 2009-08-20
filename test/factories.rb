@@ -14,6 +14,7 @@ end
 Factory.define :team do |t|
   t.slug "team-shazbot"
   t.public true
+  t.api_key { Authlogic::Random.hex_token }
 end
 
 Factory.define :member do |m|

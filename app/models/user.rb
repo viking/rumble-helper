@@ -29,14 +29,7 @@ class User < ActiveRecord::Base
 
   before_create :set_attribs
 
-  has_one :member
-  has_one :team, :through => :member
-
-  def assign_to_member!
-    team = Team.find_by_slug(self.team_slug)
-    member = team.members.find_by_nickname(self.nickname)
-    member.update_attribute(:user_id, self.id)
-  end
+  belongs_to :team
 
   protected
     def fetch_data
@@ -53,7 +46,12 @@ class User < ActiveRecord::Base
       self.nickname = @data['hash']['details']['nickname']
       self.user_type = @data['hash']['details']['user_type']
       self.email = @data['hash']['details']['email']
+      self.team_rumble_id = @data['hash']['details']['team']['id']
       self.team_slug = @data['hash']['details']['team']['slug']
       self.team_name = @data['hash']['details']['team']['name']
+
+      if (team = Team.find_by_rumble_id(self.team_rumble_id))
+        self.team_id = team.id
+      end
     end
 end

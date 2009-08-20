@@ -21,14 +21,14 @@ class RumbleTest < ActiveSupport::TestCase
     assert_nil Rumble.identity('abc123def456')
   end
 
-  test ".team fetches team by slug" do
+  test ".team fetches team by slug and api-key" do
     data = fixture_data('team_data')
-    Rumble.expects(:get).with('/teams/team-shazbot.xml').returns(data)
-    assert_equal data, Rumble.team('team-shazbot')
+    Rumble.expects(:get).with('/teams/team-shazbot.xml?api_key=abc123def456').returns(data)
+    assert_equal data, Rumble.team('team-shazbot', 'abc123def456')
   end
 
   test ".team returns nil on 404" do
-    Rumble.expects(:get).with('/teams/team-shazbot.xml').returns("404 page")
-    assert_nil Rumble.team('team-shazbot')
+    Rumble.expects(:get).with('/teams/team-shazbot.xml?api_key=abc123def456').returns("404 page")
+    assert_nil Rumble.team('team-shazbot', 'abc123def456')
   end
 end

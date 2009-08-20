@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class TeamTest < ActiveSupport::TestCase
   def setup
@@ -14,14 +14,28 @@ class TeamTest < ActiveSupport::TestCase
     assert !team.valid?
   end
 
-  test "updates attributes from team data" do
-    Rumble.expects(:team).with('your-mom').returns(@team_data)
+  test "requires api_key" do
+    team = Factory.build(:team, :api_key => nil)
+    assert !team.valid?
+  end
 
-    team = Factory(:team, :slug => 'your-mom')
+  test "updates attributes from team data" do
+    Rumble.expects(:team).with('your-mom', 'huge!!').returns(@team_data)
+
+    team = Factory(:team, :slug => 'your-mom', :api_key => 'huge!!')
+    assert_equal 3, team.rumble_id
     assert_equal "Team Shazbot", team.name
     assert_equal "lend.to", team.app_name
     assert_equal "A web app to keep track of stuff you've let your friends borrow.", team.app_description
     assert_equal "http://shazbot.r09.railsrumble.com", team.app_url
+  end
+
+  test "assigns users with same rumble_id to team" do
+    user_1 = Factory(:user)
+    user_2 = Factory(:user)
+    team = Factory(:team)
+    assert_equal team.id, user_1.reload.team_id
+    assert_equal team.id, user_2.reload.team_id
   end
 
   test "fails validation on failed fetch" do
@@ -47,17 +61,6 @@ class TeamTest < ActiveSupport::TestCase
     team = Factory(:team)
     team.save
     assert_equal 'dull', team.status
-  end
-
-  test "has_many users through members" do
-    identity = fixture_data('identity')
-    Rumble.stubs(:identity).returns(identity)
-    user = Factory(:user)
-
-    team = Factory(:team)
-
-    team.members.find_by_nickname('viking').update_attribute(:user_id, user.id)
-    assert team.users.include?(user)
   end
 
   test "has_many tasks" do

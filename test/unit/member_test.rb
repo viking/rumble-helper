@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class MemberTest < ActiveSupport::TestCase
   def setup
@@ -23,12 +23,6 @@ class MemberTest < ActiveSupport::TestCase
     task = Factory(:task)
     member = Factory(:member, :task => task)
     assert_equal task, member.task
-  end
-
-  test "belongs_to user" do
-    user = Factory(:user)
-    member = Factory(:member, :user => user)
-    assert_equal user, member.user
   end
 
   test "belongs_to team" do

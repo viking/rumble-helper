@@ -16,6 +16,8 @@ class CreateUsers < ActiveRecord::Migration
       t.string :user_type
       t.string :openid_identifier
       t.string :api_key
+      t.integer :team_id
+      t.integer :team_rumble_id
       t.string :team_slug
       t.string :team_name
 

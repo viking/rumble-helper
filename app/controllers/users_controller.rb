@@ -12,10 +12,9 @@ class UsersController < ApplicationController
     @user.save do |result|
       if result
         flash[:notice] = "Account registered!"
-        if Team.count(:conditions => { :slug => @user.team_slug }) == 0
+        if @user.team_id.nil?
           redirect_to new_team_url
         else
-          @user.assign_to_member!
           redirect_to root_url
         end
       else

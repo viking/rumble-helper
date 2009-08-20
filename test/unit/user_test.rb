@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < ActiveSupport::TestCase
   def setup
@@ -34,18 +34,15 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "viking415@gmail.com", user.email
     assert_equal "team-shazbot", user.team_slug
     assert_equal "Team Shazbot", user.team_name
+    assert_equal 3, user.team_rumble_id
   end
 
-  test '#assign_to_member! assigns member to user if team exists' do
-    user = Factory(:user)
-
+  test "automatically assigns team_id if team with same rumble_id is found" do
     team_data = fixture_data('team_data')
     Rumble.stubs(:team).returns(team_data)
+
     team = Factory(:team)
-
-    user.assign_to_member!
-    assert_equal user.nickname, user.member.nickname
-    assert_equal team, user.team
+    user = Factory(:user)
+    assert_equal team.id, user.reload.team_id
   end
-
 end

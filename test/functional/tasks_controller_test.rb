@@ -23,14 +23,10 @@ class TasksControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
+    nacho_task = Factory(:task)
+
     get :index
     assert_response :success
-    assert_not_nil assigns(:tasks)
-  end
-
-  test "#index finds only tasks related to user's team" do
-    task = Factory(:task, :team_id => 123)
-    get :index
     assert_equal [@task], assigns(:tasks)
   end
 
@@ -101,6 +97,12 @@ class TasksControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should not edit a task that's not yours" do
+    task = Factory(:task)
+    get :edit, :id => task.to_param
+    assert_response :not_found
+  end
+
   test "should redirect from edit to login if not logged in" do
     UserSession.find.destroy
     get :edit, :id => @task.to_param
@@ -110,6 +112,12 @@ class TasksControllerTest < ActionController::TestCase
   test "should update task" do
     put :update, :id => @task.to_param, :task => { }
     assert_redirected_to tasks_url
+  end
+
+  test "should not update a task that's not yours" do
+    task = Factory(:task)
+    put :update, :id => task.to_param, :task => { }
+    assert_response :not_found
   end
 
   test "should not set flash[:notice] for update for xml" do

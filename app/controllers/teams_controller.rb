@@ -50,13 +50,15 @@ class TeamsController < ApplicationController
   # POST /teams
   # POST /teams.xml
   def create
-    @team = Team.new(params[:team].merge({ :slug => current_user.team_slug }))
+    @team = Team.new(params[:team].merge({
+      :slug => current_user.team_slug, :api_key => current_user.api_key
+    }))
 
     respond_to do |format|
       if @team.save
         flash[:notice] = 'Team was successfully created.'
-        current_user.assign_to_member!
-        format.html { redirect_to(tasks_url) }
+        flash[:long_notice] = "You have successfully signed up your team! Now add some tasks you want your team to accomplish.  Also, tell your teammates to signup to manage their tasks ( if you want :] )."
+        format.html { redirect_to(new_task_url) }
         format.xml  { render :xml => @team, :status => :created, :location => @team }
       else
         format.html { render :action => "new" }
@@ -84,8 +86,8 @@ class TeamsController < ApplicationController
 
   private
     def requires_no_team
-      if (team = Team.find_by_slug(current_user.team_slug))
-        redirect_to team_url(team)
+      if current_user.team
+        redirect_to team_url(current_user.team)
         return false
       end
     end

@@ -5,16 +5,10 @@ class Member < ActiveRecord::Base
   validates_presence_of :nickname
 
   belongs_to :task
-  belongs_to :user
   belongs_to :team
 
   before_save :remember_task
   after_save :update_task
-
-  #named_scope(:unassigned, {
-    #:joins => "LEFT JOIN users ON members.id = users.member_id",
-    #:conditions => "users.member_id IS NULL"
-  #})
 
   private
     def remember_task

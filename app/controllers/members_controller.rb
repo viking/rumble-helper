@@ -19,7 +19,12 @@ class MembersController < ApplicationController
         redirect_to root_url
       end
       format.xml do
-        render :xml => @team.members.find(params[:id])
+        member = @team.members.find_by_id(params[:id])
+        if member
+          render :xml => member
+        else
+          head :not_found
+        end
       end
     end
   end
@@ -27,7 +32,8 @@ class MembersController < ApplicationController
   # PUT /members/1
   # PUT /members/1.xml
   def update
-    @member = @team.members.find(params[:id])
+    @member = @team.members.find_by_id(params[:id])
+    return head :not_found    unless @member
 
     respond_to do |format|
       if @member.update_attributes(params[:member])

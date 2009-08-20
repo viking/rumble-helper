@@ -16,23 +16,11 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "#create should redirect to new_team_url if team doesn't exist" do
-    user = mock('user', :team_slug => 'team-shazbot')
+    user = mock('user', :team_id => nil)
     user.expects(:save).yields(true)
     User.expects(:new).returns(user)
     post :create, :user => { :api_key => 'blahblah', :openid_identifier => "foo" }
     assert_redirected_to new_team_url
-  end
-
-  test "#create should set user's member if team exists" do
-    team = Factory(:team)
-
-    user = mock('user', :team_slug => 'team-shazbot')
-    User.expects(:new).returns(user)
-    user.expects(:save).yields(true)
-    user.expects(:assign_to_member!)
-
-    post :create, :user => { :api_key => 'blahblah', :openid_identifier => "foo" }
-    assert_redirected_to root_url
   end
 
   test "should show user" do

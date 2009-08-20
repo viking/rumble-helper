@@ -29,23 +29,19 @@ class TeamsControllerTest < ActionController::TestCase
     assert_redirected_to new_user_session_url
   end
 
-  test "should create team, getting slug from current_user" do
+  test "should create team, getting slug and api_key from current_user" do
     user = Factory(:user)
     UserSession.create(user)
 
-    assert_difference('Team.count') do
-      post :create, :team => { :public => '1' }
-    end
-    assert_equal user.team_slug, assigns(:team).slug
-    assert_redirected_to tasks_url
-  end
-
-  test "#create assigns user to a member" do
-    user = Factory(:user)
-    UserSession.create(user)
+    team = mock('team')
+    Team.expects(:new).with({
+      'slug' => user.team_slug, 'api_key' => user.api_key,
+      'public' => '1'
+    }).returns(team)
+    team.expects(:save).returns(true)
 
     post :create, :team => { :public => '1' }
-    assert_equal assigns(:team), user.member.team
+    assert_redirected_to new_task_url
   end
 
   test "#create redirects to show if user's team exists" do

@@ -43,7 +43,9 @@ class TasksController < ApplicationController
 
   # GET /tasks/1/edit
   def edit
-    @task = @team.tasks.find(params[:id])
+    @task = @team.tasks.find_by_id(params[:id])
+    return head :not_found    unless @task
+
     render :template => 'tasks/form'
   end
 
@@ -74,7 +76,7 @@ class TasksController < ApplicationController
   # PUT /tasks/1.xml
   def update
     @task = @team.tasks.find_by_id(params[:id])
-    return head(:not_found) if @task.nil?
+    return head(:not_found) unless @task
 
     respond_to do |format|
       if @task.update_attributes(params[:task])
@@ -94,7 +96,7 @@ class TasksController < ApplicationController
   # DELETE /tasks/1.xml
   def destroy
     @task = @team.tasks.find_by_id(params[:id])
-    return head(:not_found) if @task.nil?
+    return head(:not_found) unless @task
 
     @task.destroy
     respond_to do |format|
