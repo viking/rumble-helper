@@ -1,11 +1,10 @@
-<div id="openid_choice">
-  <label>Your OpenID provider</label>
-  <div id="openid_btns"></div>
-</div>
-<div class="clear"></div>
+<!-- BEGIN ID SELECTOR -->
+<script type="text/javascript" id="__openidselector" src="https://www.idselector.com/selector/7d3e56bc9bb4bfc199dabebd8069e14409bd903f" charset="utf-8"></script>
+<!-- END ID SELECTOR -->
 
-<div id="openid_input_area">
-  <div id="openid_label"></div>
-  <input id="openid_username" type="text" />
-  <%= f.hidden_field :openid_identifier, :value => "http://", :id => "openid_identifier" %>
+<div id='openid_selector'>
+  <p>
+    <label for='openid_identifier'>Your OpenID URL:</label><br/>
+    <%= f.text_field :openid_identifier, :id => "openid_identifier" %>
+  </p>
 </div>
