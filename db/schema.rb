@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090815202942) do
+ActiveRecord::Schema.define(:version => 20090820195813) do
 
   create_table "members", :force => true do |t|
     t.string   "nickname"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(:version => 20090815202942) do
     t.integer  "rumble_id"
     t.string   "slug"
     t.string   "name"
-    t.string   "app_description"
+    t.text     "app_description", :limit => 255
     t.string   "app_name"
     t.string   "app_url"
     t.string   "status"
